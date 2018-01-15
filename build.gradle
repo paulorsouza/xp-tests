@@ -1,0 +1,58 @@
+buildscript {
+	ext {
+		kotlinVersion = '1.1.61'
+		springBootVersion = '1.5.9.RELEASE'
+	}
+	repositories {
+		jcenter()
+		mavenCentral()
+		mavenLocal()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
+		classpath("org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}")
+	}
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'kotlin-spring'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'war'
+
+group = 'br.com.pacificosul'
+version = '0.0.1'
+sourceCompatibility = 1.8
+war {
+	archiveName = "${project.name}.war"
+}
+bootRun {
+	addResources = true
+}
+compileKotlin {
+	kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+	kotlinOptions.jvmTarget = "1.8"
+}
+
+repositories {
+	jcenter()
+	mavenCentral()
+	mavenLocal()
+}
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-jdbc')
+	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile("org.jetbrains.kotlin:kotlin-stdlib-jre8:${kotlinVersion}")
+	compile("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
+	runtime('org.springframework.boot:spring-boot-devtools')
+	compile("com.oracle:ojdbc7:12.1.0.2")
+	compile('mysql:mysql-connector-java')
+	compile group: 'com.zaxxer', name: 'HikariCP-java6', version: '2.0.1'
+	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
