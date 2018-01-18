@@ -1,7 +1,6 @@
 package br.com.pacificosul.repository.ordens
 
 import br.com.pacificosul.data.ordens.OrdensAProduzirData
-import br.com.pacificosul.data.ordens.PeriodoProducaoAbertoData
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 
