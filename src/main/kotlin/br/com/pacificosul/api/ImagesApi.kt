@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RequestMapping
-import java.nio.file.Path
-import java.nio.file.Paths
 import java.io.IOException
 import org.springframework.web.bind.annotation.GetMapping
 
@@ -24,16 +22,16 @@ class ImagesApi {
     val DIR_FOTOS_PRODUTOS = "/mnt/servidor/fotos/"
     val DIR_FOTOS_INSUMOS = "/mnt/servidor/produc/fotos/insumos/"
 
-//    @GetMapping("produto")
-//    @ResponseBody
-//    fun get(@RequestParam("nivel") nivel: String,
-//            @RequestParam("grupo") grupo: String,
-//            @RequestParam("subGrupo") subGrupo: String,
-//            @RequestParam("item") item: String): Image? {
-//        val imagePath = findPath(nivel, grupo, subGrupo, item)
-//        val name = Images.pathDestructor(imagePath)
-//        return Image(name.orEmpty(), imagePath)
-//    }
+    @GetMapping("produto")
+    @ResponseBody
+    fun get(@RequestParam("nivel") nivel: String,
+            @RequestParam("grupo") grupo: String,
+            @RequestParam("subGrupo") subGrupo: String,
+            @RequestParam("item") item: String): Image? {
+        val imagePath = DIR_FOTOS_INSUMOS + nivel + grupo + subGrupo + item
+        val name = Images.getName(imagePath)
+        return Image(name.orEmpty(), imagePath, "tag", "1");
+    }
 //
     @GetMapping("/produto/referencia/{referencia}")
     @ResponseBody
@@ -44,17 +42,6 @@ class ImagesApi {
         }
         return Images.getImages(DIR_FOTOS_PRODUTOS, ref)
     }
-
-//    @GetMapping("/download/produto")
-//    @ResponseBody
-//    fun get(@RequestParam("nivel") nivel: String,
-//            @RequestParam("grupo") grupo: String,
-//            @RequestParam("subGrupo") subGrupo: String,
-//            @RequestParam("item") item: String,
-//            @RequestParam( "height", required = false) height: Int?): Image? {
-//        val imagePath = findPath(nivel, grupo, subGrupo, item);
-//        return getBase64(imagePath, height)
-//    }
 
     @GetMapping("/base64/download")
     @ResponseBody
@@ -81,19 +68,4 @@ class ImagesApi {
         return file.readBytes()
     }
 
-    fun getBase64(path: String, height: Int?): Image {
-        val file = File(path)
-        var bytes: ByteArray
-        if (height != null) {
-            bytes = Images.resizeImageAsByteArray(height, FileInputStream(file), "jpg")
-        } else {
-            bytes = file.readBytes()
-        }
-        val base64 = Images.toBase64(bytes)
-        return Image(file.nameWithoutExtension, base64.orEmpty())
-    }
-
-//    fun findPath(nivel: String, grupo: String, subGrupo: String, item: String): String {
-//        return DIR_BASE + "Screenshot_20180102_105952.jpeg"
-//    }
 }
