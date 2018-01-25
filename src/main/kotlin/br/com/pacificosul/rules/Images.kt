@@ -1,5 +1,6 @@
 package br.com.pacificosul.rules
 
+import br.com.pacificosul.data.Image
 import javax.imageio.ImageIO
 import javax.imageio.IIOImage
 import java.awt.Color
@@ -8,26 +9,13 @@ import javax.imageio.ImageWriteParam
 import javax.imageio.ImageWriter
 import java.awt.image.BufferedImage
 import java.io.*
+import java.nio.file.Paths
 import java.util.Base64;
 
 object Images {
 
     fun toBase64(imageBytes: ByteArray): String? {
         return Base64.getEncoder().encodeToString(imageBytes)
-    }
-
-    fun toImage(base64Image: String, pathFile: String) {
-        try {
-            FileOutputStream(pathFile).use { imageOutFile ->
-                // Converting a Base64 String into Image byte array
-                val imageByteArray = Base64.getDecoder().decode(base64Image)
-                imageOutFile.write(imageByteArray)
-            }
-        } catch (e: FileNotFoundException) {
-            println("Image not found" + e)
-        } catch (ioe: IOException) {
-            println("Exception while reading the Image " + ioe)
-        }
     }
 
     @Throws(IOException::class)
@@ -85,4 +73,39 @@ object Images {
         return newHeight * currentHeight / currentWidth
     }
 
+    fun getName(path: String): String? {
+        val regex = Regex("\\/(\\w*).jpg")
+        return regex.find(path)?.groups?.get(1)?.value
+    }
+
+    fun getType(referencia: String, imagePath: String): String? {
+        val regex = Regex(referencia + "_([a-zA-Z]*)_")
+        return regex.find(imagePath)?.groups?.get(1)?.value
+    }
+
+    fun getSequence(imagePath: String): String? {
+        val regex = Regex("_((?!_).\\w).jpg")
+        return regex.find(imagePath)?.groups?.get(1)?.value
+    }
+
+    fun getImages(base: String, referencia: String) : HashMap<String, List<Image>> {
+        val refPath = base + referencia + "/"
+        val paths = arrayListOf<Image>()
+        File(refPath).walkTopDown().forEach({
+            x ->
+                if(x.toString().endsWith(".jpg")) {
+                    val image = createImage(referencia, x.toString())
+                    paths.add(image)
+                }
+        })
+
+        return hashMapOf(Pair(referencia, paths))
+    }
+
+    fun createImage(referencia: String, imagePath: String) : Image {
+        val name = getName(imagePath)
+        val type = getType(referencia, imagePath)
+        val sequence = getSequence(imagePath)
+        return Image(name, imagePath, type, sequence)
+    }
 }
