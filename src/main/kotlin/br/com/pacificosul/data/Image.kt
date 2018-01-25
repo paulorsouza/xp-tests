@@ -6,7 +6,7 @@ class Image {
     var type: String? = null
     var sequence: String? = null
 
-    constructor() {}
+    constructor()
 
     constructor(name: String?, path: String?) {
         this.name = name
