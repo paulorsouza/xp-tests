@@ -47,12 +47,15 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-jdbc')
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('org.springframework.boot:spring-boot-starter-security')
 	compile("org.jetbrains.kotlin:kotlin-stdlib-jre8:${kotlinVersion}")
 	compile("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
 	runtime('org.springframework.boot:spring-boot-devtools')
 	compile("com.oracle:ojdbc7:12.1.0.2")
 	compile('mysql:mysql-connector-java')
 	compile group: 'com.zaxxer', name: 'HikariCP-java6', version: '2.0.1'
+	compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.2'
+    compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-kotlin', version: '2.9.3'
 	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile 'junit:junit:4.11'
