@@ -2,7 +2,6 @@ package br.com.pacificosul.rules
 
 import kotlin.test.assertEquals
 import org.junit.Test
-import java.awt.Image
 
 class ImagesTest {
     @Test fun destructorTest() {

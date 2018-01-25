@@ -1,10 +1,10 @@
-package br.com.pacificosul.api
+package br.com.pacificosul.controller
 
 import br.com.pacificosul.rules.Images
 import br.com.pacificosul.data.Image
 import org.springframework.http.MediaType
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.File
+import java.io.FileInputStream
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping
 @RestController
 @CrossOrigin(origins = arrayOf("http://localhost:3000", "http://192.168.0.193:3000", "http://localhost:8080"))
 @RequestMapping("/api/images")
-class ImagesApi {
+class ImagesController {
 
     val DIR_FOTOS_PRODUTOS = "/mnt/servidor/fotos/"
     val DIR_FOTOS_INSUMOS = "/mnt/servidor/produc/fotos/insumos/"
@@ -30,7 +30,7 @@ class ImagesApi {
             @RequestParam("item") item: String): Image? {
         val imagePath = DIR_FOTOS_INSUMOS + nivel + grupo + subGrupo + item
         val name = Images.getName(imagePath)
-        return Image(name.orEmpty(), imagePath, "tag", "1");
+        return Image(name.orEmpty(), imagePath, "tag", "1")
     }
 //
     @GetMapping("/produto/referencia/{referencia}")

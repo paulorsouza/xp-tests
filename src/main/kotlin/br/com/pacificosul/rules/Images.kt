@@ -4,13 +4,11 @@ import br.com.pacificosul.data.Image
 import javax.imageio.ImageIO
 import javax.imageio.IIOImage
 import java.awt.Color
-import java.awt.Graphics2D
 import javax.imageio.ImageWriteParam
 import javax.imageio.ImageWriter
 import java.awt.image.BufferedImage
 import java.io.*
-import java.nio.file.Paths
-import java.util.Base64;
+import java.util.Base64
 
 object Images {
 
@@ -21,8 +19,8 @@ object Images {
     @Throws(IOException::class)
     fun resizeImageAsByteArray(widthHeight: Int?, inputStream: InputStream, ext: String): ByteArray {
         val imgOriginalImage = ImageIO.read(inputStream)
-        val originalHeight = imgOriginalImage.getHeight()
-        val originalWidht = imgOriginalImage.getWidth()
+        val originalHeight = imgOriginalImage.height
+        val originalWidht = imgOriginalImage.width
 
         var newHeight = 0
         var newWidth = 0

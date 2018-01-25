@@ -1,4 +1,4 @@
-package br.com.pacificosul.api
+package br.com.pacificosul.controller
 
 import br.com.pacificosul.data.PedidosRecebidosData
 import br.com.pacificosul.data.TotalPedidosRecebidosData
@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter
 @RestController
 @CrossOrigin(origins = arrayOf("http://localhost:3000", "http://192.168.0.193:3000", "http://localhost:8080"))
 @RequestMapping("/api/representantes")
-class RepresentantesApi: DefaultApi() {
+class RepresentantesController : DefaultController() {
 
     @GetMapping("/mysql/totalPedidosRecebidos")
     fun getTotalPedidosRecebidos(@RequestParam(name = "dataFiltro", required = true) dataFiltro: String,
