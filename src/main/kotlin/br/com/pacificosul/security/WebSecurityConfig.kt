@@ -22,7 +22,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
     @Throws(Exception::class)
     override fun configure(httpSecurity: HttpSecurity) {
         httpSecurity.csrf().disable().authorizeRequests()
-            .antMatchers("/").permitAll()
+            .antMatchers(HttpMethod.OPTIONS).permitAll()
             .antMatchers(HttpMethod.POST, "/login").permitAll()
             .anyRequest().authenticated()
             .and()
@@ -34,11 +34,6 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Throws(Exception::class)
     override fun configure(auth: AuthenticationManagerBuilder?) {
-        println(auth.toString())
         auth!!.authenticationProvider(authenticationProvider)
-//        auth!!.inMemoryAuthentication()
-//            .withUser("admin")
-//            .password("password")
-//            .roles("ADMIN")
     }
 }

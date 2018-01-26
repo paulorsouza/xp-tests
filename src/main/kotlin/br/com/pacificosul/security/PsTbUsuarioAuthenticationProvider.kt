@@ -20,22 +20,20 @@ class PsTbUsuarioAuthenticationProvider : AuthenticationProvider {
 
         val name = authentication.getName()
         val password = authentication.getCredentials().toString()
-
         val sqlParameters = arrayListOf<String>(name, password)
 
-        val sql = "SELECT DES_APELIDO FROM PACIFICOSUL.PS_TB_USUARIO " +
+        val sql = "SELECT DES_APELIDO, COD_USUARIO, COD_USUARIO_VETORH " +
+                  "FROM PACIFICOSUL.PS_TB_USUARIO " +
                   "WHERE COD_USUARIO_VETORH = ? " +
                   "AND DES_SENHA = ? "
 
-        val apelido = jdbcTemplate.query(sql, sqlParameters.toArray()) {
-            rs, _ -> rs.getString(1)
+        val claims = jdbcTemplate.query(sql, sqlParameters.toArray()) {
+            rs, _ -> TokenClaims(rs.getString(1), rs.getString(2), rs.getString(3))
         }.orEmpty()
 
-        println(apelido)
-
-        if (apelido.isNotEmpty()) {
+        if (claims.isNotEmpty()) {
             return UsernamePasswordAuthenticationToken(
-                    apelido[0], password, ArrayList<GrantedAuthority>())
+                    claims[0], password, ArrayList<GrantedAuthority>())
         } else {
             return null
         }

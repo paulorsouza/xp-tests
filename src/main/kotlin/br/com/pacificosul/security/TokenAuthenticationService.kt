@@ -26,8 +26,7 @@ object TokenAuthenticationService {
             .setExpiration(Date(System.currentTimeMillis() + EXPIRATION_TIME))
             .signWith(SignatureAlgorithm.HS512, SECRET)
             .compact()
-
-        response.addHeader(HEADER_STRING, TOKEN_PREFIX + " " + JWT)
+        response.writer.write(TOKEN_PREFIX + " " + JWT)
     }
 
     internal fun getAuthentication(request: HttpServletRequest): Authentication? {
@@ -39,6 +38,8 @@ object TokenAuthenticationService {
                 .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
                 .body
                 .subject
+
+            println(user)
 
             if (user != null) {
                 return UsernamePasswordAuthenticationToken(user, null, emptyList<GrantedAuthority>())
