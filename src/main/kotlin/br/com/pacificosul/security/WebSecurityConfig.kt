@@ -9,8 +9,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import br.com.pacificosul.security.PsTbUsuarioAuthenticationProvider
 import org.springframework.beans.factory.annotation.Autowired
-
-
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.context.annotation.Bean
 
 @Configuration
 @EnableWebSecurity
@@ -21,7 +23,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Throws(Exception::class)
     override fun configure(httpSecurity: HttpSecurity) {
-        httpSecurity.csrf().disable().authorizeRequests()
+        httpSecurity.cors().and().csrf().disable().authorizeRequests()
             .antMatchers(HttpMethod.OPTIONS).permitAll()
             .antMatchers(HttpMethod.POST, "/login").permitAll()
             .anyRequest().authenticated()
@@ -36,4 +38,23 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
     override fun configure(auth: AuthenticationManagerBuilder?) {
         auth!!.authenticationProvider(authenticationProvider)
     }
+
+    @Bean
+    fun corsConfigurationSource(): CorsConfigurationSource {
+        val configuration = CorsConfiguration()
+        configuration.addAllowedOrigin("http://localhost:3000")
+        configuration.addAllowedMethod(HttpMethod.POST)
+        configuration.addAllowedMethod(HttpMethod.PUT)
+        configuration.addAllowedMethod(HttpMethod.OPTIONS)
+        configuration.addAllowedMethod(HttpMethod.GET)
+        configuration.addAllowedMethod(HttpMethod.DELETE)
+        configuration.maxAge = 3600
+        configuration.allowedHeaders = arrayListOf("Authorization", "Origin", "Content-Type")
+        configuration.exposedHeaders = arrayListOf("Authorization", "Origin", "Content-Type")
+        configuration.allowCredentials = false
+        val source = UrlBasedCorsConfigurationSource()
+        source.registerCorsConfiguration("/**", configuration)
+        return source
+    }
+
 }

@@ -26,8 +26,11 @@ object TokenAuthenticationService {
             .setExpiration(Date(System.currentTimeMillis() + EXPIRATION_TIME))
             .signWith(SignatureAlgorithm.HS512, SECRET)
             .compact()
+
+        response.addHeader(HEADER_STRING, TOKEN_PREFIX + " " + JWT)
         response.writer.write(TOKEN_PREFIX + " " + JWT)
     }
+
 
     internal fun getAuthentication(request: HttpServletRequest): Authentication? {
         val token = request.getHeader(HEADER_STRING)

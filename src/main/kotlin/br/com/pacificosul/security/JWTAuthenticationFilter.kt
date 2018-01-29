@@ -9,12 +9,14 @@ import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.GenericFilterBean
+import javax.servlet.http.HttpServletResponse
+
+
 
 class JWTAuthenticationFilter : GenericFilterBean() {
 
     @Throws(IOException::class, ServletException::class)
     override fun doFilter(request: ServletRequest, response: ServletResponse, filterChain: FilterChain) {
-
         val authentication = TokenAuthenticationService.getAuthentication(request as HttpServletRequest)
 
         SecurityContextHolder.getContext().authentication = authentication

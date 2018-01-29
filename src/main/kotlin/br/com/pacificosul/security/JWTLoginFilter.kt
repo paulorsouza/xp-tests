@@ -13,7 +13,8 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.security.core.GrantedAuthority
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.core.JsonParser.Feature;
+import com.fasterxml.jackson.core.JsonParser.Feature
+import java.util.stream.Collectors
 
 class JWTLoginFilter (url: String, authManager: AuthenticationManager) : AbstractAuthenticationProcessingFilter(AntPathRequestMatcher(url)) {
 
@@ -23,7 +24,10 @@ class JWTLoginFilter (url: String, authManager: AuthenticationManager) : Abstrac
 
     @Throws(AuthenticationException::class, IOException::class, ServletException::class)
     override fun attemptAuthentication(request: HttpServletRequest, response: HttpServletResponse): Authentication {
-        val mapper = jacksonObjectMapper().configure(Feature.AUTO_CLOSE_SOURCE, true)
+        val mapper = jacksonObjectMapper()
+        mapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
+        mapper.configure(Feature.ALLOW_SINGLE_QUOTES, true)
+        mapper.configure(Feature.AUTO_CLOSE_SOURCE, true)
         val credentials = mapper.readValue(request.inputStream, AccountCredentials::class.java)
 
         return authenticationManager.authenticate(
