@@ -7,7 +7,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import br.com.pacificosul.security.PsTbUsuarioAuthenticationProvider
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import org.springframework.web.cors.CorsConfiguration
@@ -42,7 +41,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
-        configuration.addAllowedOrigin("http://localhost:3000")
+        configuration.allowedOrigins = arrayListOf("http://localhost:3000")
         configuration.addAllowedMethod(HttpMethod.POST)
         configuration.addAllowedMethod(HttpMethod.PUT)
         configuration.addAllowedMethod(HttpMethod.OPTIONS)

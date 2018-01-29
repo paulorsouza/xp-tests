@@ -14,6 +14,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.security.core.GrantedAuthority
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.core.JsonParser.Feature
+import org.codehaus.groovy.runtime.InvokerHelper
 import java.util.stream.Collectors
 
 class JWTLoginFilter (url: String, authManager: AuthenticationManager) : AbstractAuthenticationProcessingFilter(AntPathRequestMatcher(url)) {
@@ -32,7 +33,7 @@ class JWTLoginFilter (url: String, authManager: AuthenticationManager) : Abstrac
 
         return authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(
-                credentials.username,
+                credentials,
                 credentials.password,
                 emptyList<GrantedAuthority>()
             )
@@ -45,7 +46,7 @@ class JWTLoginFilter (url: String, authManager: AuthenticationManager) : Abstrac
             response: HttpServletResponse,
             filterChain: FilterChain?,
             auth: Authentication) {
-        TokenAuthenticationService.addAuthentication(response, auth.name)
+        TokenAuthenticationService.addAuthentication(response, claims = auth.principal as TokenClaims)
     }
 
 }
