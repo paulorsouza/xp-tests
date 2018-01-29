@@ -8,10 +8,10 @@ class UserRepository(private val jdbcTemplate: JdbcTemplate) {
         val sql = "select 1 from pacificosul.ps_tb_usuario " +
                 "where ip_web = ? and cod_usuario = ? "
         val result = jdbcTemplate.query(sql, arrayOf(ip, codUser)) {
-            rs, _ -> rs
+            rs, _ -> rs.getString(1)
         }.orEmpty()
 
-        if(result != null) return true
+        if(result.isNotEmpty()) return true
         return false
     }
 }
