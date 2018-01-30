@@ -17,6 +17,10 @@ class UserController : DefaultController() {
         val sameIp = UserRepository(oracleTemplate).sameIp(Integer.parseInt(claims.cod_usuario), claims.ip)
         if(!sameIp) throw ForbiddenException()
         return claims
+    }
 
+    @GetMapping("/{codUser}/apelido")
+    fun getApelido(@PathVariable("codUser") codUser: Int): String? {
+        return UserRepository(oracleTemplate).getApelido(codUser)
     }
 }

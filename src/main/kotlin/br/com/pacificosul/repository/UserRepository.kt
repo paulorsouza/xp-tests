@@ -14,4 +14,12 @@ class UserRepository(private val jdbcTemplate: JdbcTemplate) {
         if(result.isNotEmpty()) return true
         return false
     }
+
+    fun getApelido(codUser: Int): String? {
+        val sql = "select des_apelido from pacificosul.ps_tb_usuario " +
+                "where cod_usuario_vetorh = ? "
+        return jdbcTemplate.query(sql, arrayOf(codUser)) {
+            rs, _ -> rs.getString(1)
+        }.firstOrNull()
+    }
 }
