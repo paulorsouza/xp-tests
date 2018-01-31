@@ -22,7 +22,7 @@ class OrdensAProduzirRepository(private val jdbcTemplate: JdbcTemplate) {
         "      when consulta.tempo_desde_estagio > 20 then 'Crítico' end) as situacao from " +
 
         "(select consulta_base.ORDEM_PRODUCAO,consulta_base.ORDEM_PRINCIPAL, consulta_base.CODIGO_ESTAGIO, " +
-        " consulta_base.CODIGO_ESTAGIO || ' - ' ||d.DESCRICAO as DesCod_estagio, " +
+        " '(' || consulta_base.CODIGO_ESTAGIO || ') ' ||d.DESCRICAO as DesCod_estagio, " +
         " d.DESCRICAO as descricao_estagio, consulta_base.PERIODO_PRODUCAO,d.leed_time, " +
         "consulta_base.tipo_ordem, consulta_base.des_tipo_ordem,consulta_base.tem_sus, " +
         "j.DATA_EMISSAO as data_emissao_os,(select max(x.DT_PREV_ARECEBER) from obrf_081 x" +
