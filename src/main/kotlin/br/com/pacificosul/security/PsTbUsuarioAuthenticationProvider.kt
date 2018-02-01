@@ -25,8 +25,6 @@ class PsTbUsuarioAuthenticationProvider : AuthenticationProvider {
         val password = credentials.password
         val cracha = credentials.username
         val ip = credentials.ip
-
-        println(credentials.ip)
         val sqlParameters = arrayListOf<String>(cracha, password)
 
         val sql = "SELECT DES_APELIDO, COD_USUARIO, COD_USUARIO_VETORH " +

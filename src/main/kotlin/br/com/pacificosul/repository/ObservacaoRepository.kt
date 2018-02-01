@@ -33,6 +33,33 @@ class ObservacaoRepository(private val jdbcTemplate: NamedParameterJdbcTemplate)
         jdbcTemplate.update(insert, mapa)
     }
 
+
+    fun getObservacaoSystextil(numeroOp: Int): Pair<String, String>? {
+        val sql = " select pcpc_020.observacao, pcpc_020.observacao2 from pcpc_020 " +
+                "where pcpc_020.ordem_producao = :ordemProducao"
+        val mapa = HashMap<String, Any>()
+        mapa["ordemProducao"] = numeroOp
+        return jdbcTemplate.query(sql, mapa) {
+            rs, _ -> Pair(rs.getString(1), rs.getString(2))
+        }.firstOrNull()
+    }
+
+    fun getObservacaoPeD(codReferencia: Int): List<ObservacaoData>? {
+        val sql = "select ps_tb_movimentacao_obs.dat_obs as data, ps_tb_usuario.des_apelido as apelido, " +
+                "ps_tb_fase.nom_fase as fase, ps_tb_movimentacao_obs.obs_movimentacao as obs " +
+                "from pacificosul.ps_tb_movimentacao_obs " +
+                "left join pacificosul.ps_tb_usuario on (ps_tb_movimentacao_obs.cod_usuario = ps_tb_usuario.cod_usuario) " +
+                "left join pacificosul.ps_tb_fase on (ps_tb_movimentacao_obs.cod_fase = ps_tb_fase.cod_fase) " +
+                "where cod_referencia = :codReferencia " +
+                "order by dat_obs des "
+        val mapa = HashMap<String, Any>()
+        mapa["codReferencia"] = codReferencia
+        return jdbcTemplate.query(sql, mapa) {
+            rs, _ -> ObservacaoData(null, rs.getString("apelido"),
+                rs.getString("obs"), 1, rs.getString("fase "), rs.getDate("data"))
+        }.orEmpty()
+    }
+
     fun listFromEstagiosParalelos(ordemProducao: Int): List<ObservacaoData> {
         val sql = (""
                 + "select * from PACIFICOSUL.PS_TB_OBS_200 a "

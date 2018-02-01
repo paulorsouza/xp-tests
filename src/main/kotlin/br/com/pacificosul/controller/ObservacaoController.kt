@@ -28,6 +28,18 @@ class ObservacaoController : DefaultController() {
         return rep.listFromEstagiosParalelos(numeroOp)
     }
 
+    @GetMapping("systextil/op/{numeroOp}")
+    fun getObservacoeSystextil(
+            @PathVariable("numeroOp") numeroOp: Int) : Pair<String, String>? {
+        return ObservacaoRepository(oracleTemplate).getObservacaoSystextil(numeroOp)
+    }
+
+    @GetMapping("referencia/{numeroReferencia}")
+    fun getObservacoeByRef(
+            @PathVariable("numeroReferencia") numeroRef: Int) : List<ObservacaoData>? {
+        return ObservacaoRepository(oracleTemplate).getObservacaoPeD(numeroRef)
+    }
+
     @PostMapping("/op/{numeroOp}/add")
     fun addObservacao(authentication: Authentication,
                       @PathVariable("numeroOp") numeroOp: Int,
