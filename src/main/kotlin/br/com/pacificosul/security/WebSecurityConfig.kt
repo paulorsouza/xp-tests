@@ -24,6 +24,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
     override fun configure(httpSecurity: HttpSecurity) {
         httpSecurity.cors().and().csrf().disable().authorizeRequests()
             .antMatchers(HttpMethod.OPTIONS).permitAll()
+            .antMatchers(HttpMethod.GET, "/api/images/download").permitAll()
             .antMatchers(HttpMethod.GET, "/api/user/*/apelido").permitAll()
             .antMatchers(HttpMethod.POST, "/login").permitAll()
             .anyRequest().authenticated()

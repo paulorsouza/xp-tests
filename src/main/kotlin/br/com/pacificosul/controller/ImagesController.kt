@@ -26,8 +26,8 @@ class ImagesController {
         val name = Images.getName(imagePath)
         return Image(name.orEmpty(), imagePath, "tag", "1")
     }
-//
-    @GetMapping("/produto/referencia/{referencia}")
+
+    @GetMapping("produto/referencia/{referencia}")
     @ResponseBody
     fun get(@PathVariable("referencia") referencia: String): HashMap<String, List<Image>> {
         var ref = referencia
