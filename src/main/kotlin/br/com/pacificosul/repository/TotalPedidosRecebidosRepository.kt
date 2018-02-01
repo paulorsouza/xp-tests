@@ -3,9 +3,10 @@ package br.com.pacificosul.repository
 import br.com.pacificosul.data.PedidosRecebidosData
 import br.com.pacificosul.data.TotalPedidosRecebidosData
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.sql.Date
 
-class TotalPedidosRecebidosRepository(private val jdbcTemplate: JdbcTemplate) {
+class TotalPedidosRecebidosRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
 
     fun get(dataFiltro: Date, showPedidosSistema: Boolean, isGrouped: Boolean): List<TotalPedidosRecebidosData> {
 
@@ -39,7 +40,10 @@ class TotalPedidosRecebidosRepository(private val jdbcTemplate: JdbcTemplate) {
                 groupBy +
                 "order by `representante`.`cod_representante`,`rep_pedido`.`vlr_pedido`, `rep_cliente`.`nom_cliente`"
 
-        return jdbcTemplate.query(sql, arrayOf(dataFiltro)){
+        val mapa = HashMap<String, Any>()
+        mapa["dataFiltro"] = dataFiltro
+
+        return jdbcTemplate.query(sql, mapa){
             rs, _ ->
             TotalPedidosRecebidosData(rs.getInt("num_pedido"),
                     rs.getString("des_estado"),
@@ -90,30 +94,30 @@ class TotalPedidosRecebidosRepository(private val jdbcTemplate: JdbcTemplate) {
         sql.append("left join periodo on (rep_pedido.cod_periodo = periodo.cod_periodo) ")
         sql.append("where `rep_pedido`.`qtd_pedido` > 0 ")
 
-        val sqlParameters = mutableMapOf<String, Any>()
+        val mapa = HashMap<String, Any>()
 
         if (!periodo.isNullOrEmpty()) {
-            sql.append("and rep_pedido.cod_periodo in (?) ")
-            sqlParameters.put("periodo", periodo.orEmpty())
+            sql.append("and rep_pedido.cod_periodo in :periodo ")
+            mapa["periodo"] = periodo.orEmpty()
         }
 
         if (codRepresentante != null) {
-            sql.append("and rep_pedido.cod_representante = ? ")
-            sqlParameters.put("codRepresentante", codRepresentante)
+            sql.append("and rep_pedido.cod_representante = :codRepresentante ")
+            mapa["codRepresentante"] = codRepresentante
         }
 
         if (dataInicioFiltro != null && dataTerminoFiltro == null){
-            sql.append("and `rep_pedido`.`dat_recebido` = ? ")
-            sqlParameters.put("dataInicioFiltro", dataInicioFiltro)
+            sql.append("and `rep_pedido`.`dat_recebido` = :dataInicioFiltro ")
+            mapa["dataInicioFiltro"] = dataInicioFiltro
         }
 
         if (dataInicioFiltro != null && dataTerminoFiltro != null){
-            sql.append("and `rep_pedido`.`dat_recebido` between ? and ?")
-            sqlParameters.put("dataInicioFiltro", dataInicioFiltro)
-            sqlParameters.put("dataTerminoFiltro", dataTerminoFiltro)
+            sql.append("and `rep_pedido`.`dat_recebido` between :dataInicioFiltro and :dataTerminoFiltro")
+            mapa["dataInicioFiltro"] = dataInicioFiltro
+            mapa["dataTerminoFiltro"] = dataTerminoFiltro
         }
 
-        return jdbcTemplate.query(sql.toString(), sqlParameters.values.toTypedArray()){
+        return jdbcTemplate.query(sql.toString(), mapa){
             rs, _ -> PedidosRecebidosData(rs.getString("des_apelido"),
                 rs.getString("des_estado"), rs.getInt("cod_representante"),
                 rs.getDouble("vlr_pedido"), rs.getDate("dat_recebido"),

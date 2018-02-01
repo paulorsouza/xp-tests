@@ -4,7 +4,7 @@ import br.com.pacificosul.data.ordens.OrdensAProduzirData
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 
-class OrdensAProduzirRepository(private val jdbcTemplate: JdbcTemplate) {
+class OrdensAProduzirRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
     fun get(listaPeriodo: List<Int>, listaEstagios: List<Int>): List<OrdensAProduzirData> {
 
         val sql = "select consulta.*, " +
@@ -159,13 +159,12 @@ class OrdensAProduzirRepository(private val jdbcTemplate: JdbcTemplate) {
         "consulta_base.CODIGO_FAMILIA,i.DESCRICAO,d.LEED_TIME,s.des_apelido,consulta_base.ultimo_estagio " +
         ") consulta "
         //"order by ' + orderBy);
-                
-        var namedJdbc = NamedParameterJdbcTemplate(jdbcTemplate.dataSource)
+
         val mapa = HashMap<String, Any>()
         mapa.set("listaEstagios",listaEstagios)
         mapa.set("listaPeriodos",listaPeriodo)
 
-        return namedJdbc.query(sql, mapa) {
+        return jdbcTemplate.query(sql, mapa) {
             rs, _ -> OrdensAProduzirData(rs.getInt("ORDEM_PRODUCAO"),
                 rs.getInt("CODIGO_ESTAGIO"),
                 rs.getString("DESCRICAO_ESTAGIO"),

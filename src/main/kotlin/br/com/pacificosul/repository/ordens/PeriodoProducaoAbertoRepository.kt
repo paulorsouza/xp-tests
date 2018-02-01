@@ -4,7 +4,7 @@ import br.com.pacificosul.data.ordens.PeriodoProducaoAbertoData
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 
-class PeriodoProducaoAbertoRepository(private val jdbcTemplate: JdbcTemplate) {
+class PeriodoProducaoAbertoRepository(private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
     fun get(estagiosConcatenados: List<Int>): List<PeriodoProducaoAbertoData> {
 
         val sql =   "select PERIODO_PRODUCAO, DES_PERIODO, count(DISTINCT ORDEM_PRODUCAO) as qtd_op," +
@@ -25,12 +25,11 @@ class PeriodoProducaoAbertoRepository(private val jdbcTemplate: JdbcTemplate) {
                     "group by PERIODO_PRODUCAO, DES_PERIODO, SIT_CONSIDERA_CONSULTA,ORDENACAO " +
                     "order by ORDENACAO asc"
 
-        var namedJdbc = NamedParameterJdbcTemplate(jdbcTemplate.dataSource)
         val mapa = HashMap<String, Any>()
         mapa.set("param",estagiosConcatenados)
         mapa.set("cancelamento",0)
 
-        return namedJdbc.query(sql, mapa) {
+        return namedParameterJdbcTemplate.query(sql, mapa) {
             rs, _ -> PeriodoProducaoAbertoData(rs.getInt("PERIODO_PRODUCAO"),
                 rs.getString("DES_PERIODO"), rs.getInt("QTDE_EM_PRODUCAO_PACOTE"), rs.getInt("qtd_op"))
         }.orEmpty()

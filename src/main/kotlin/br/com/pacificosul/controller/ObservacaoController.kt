@@ -35,7 +35,6 @@ class ObservacaoController : DefaultController() {
         val claims = authentication.principal as TokenClaims
         val codUsuario = Integer.parseInt(claims.cod_usuario)
         val nome = UserRepository(oracleTemplate).getNomeUsuario(codUsuario)
-        val date = java.util.Date()
         ObservacaoRepository(oracleTemplate).addObservacao(nome.orEmpty(),
                 numeroOp, payload.observacao.orEmpty(), payload.descEstagio.orEmpty())
         return ObservacaoData(numeroOp, nome, payload.observacao.orEmpty(), 1,

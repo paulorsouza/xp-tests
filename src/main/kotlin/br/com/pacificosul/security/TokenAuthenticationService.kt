@@ -36,7 +36,7 @@ object TokenAuthenticationService {
                     .body["user"]
 
             if (user != null) {
-                val data = user as Map<String, Any?>
+                val data = user as Map<*, *>
                 val tokenClaims = TokenClaims(
                         data.get("apelido").toString(),
                         data.get("cod_usuario").toString(),

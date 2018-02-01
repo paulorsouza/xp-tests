@@ -2,13 +2,18 @@ package br.com.pacificosul.repository
 
 import br.com.pacificosul.data.ObservacaoData
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 
-class ObservacaoRepository(private val jdbcTemplate: JdbcTemplate) {
+class ObservacaoRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
    fun listAll(ordemProducao: Int): List<ObservacaoData> {
        val sql = "select * from pacificosul.ps_tb_obs_200 " +
-               "where ordem_producao = ? " +
+               "where ordem_producao = :ordemProducao " +
                "order by data_observacao desc"
-       return jdbcTemplate.query(sql, arrayOf(ordemProducao)) {
+
+       val mapa = HashMap<String, Any>()
+       mapa["ordemProducao"] = ordemProducao
+
+       return jdbcTemplate.query(sql, mapa) {
            rs, _ -> ObservacaoData(
                ordemProducao, rs.getString("usuario"), rs.getString("observacao"),
                rs.getInt("sequencia"), rs.getString("estagio"), rs.getDate("data_observacao"))
@@ -19,14 +24,19 @@ class ObservacaoRepository(private val jdbcTemplate: JdbcTemplate) {
 //        val estagio = "($estagio)$desEstagio"
         val insert = "insert into PACIFICOSUL.PS_TB_OBS_200 " +
                 "(ordem_producao, usuario, observacao, estagio, data_observacao) " +
-                "values (?, ?, ?, ?, CURRENT_DATE)"
-        jdbcTemplate.update(insert, ordem, nome, observacao, descEstagio)
+                "values (:ordemProducao, :usuario, :observacao, :descricaoEstagio, CURRENT_DATE)"
+        val mapa = HashMap<String, Any>()
+        mapa["ordemProducao"] = ordem
+        mapa["usuario"] = nome
+        mapa["observacao"] = observacao
+        mapa["descricaoEstagio"] = descEstagio
+        jdbcTemplate.update(insert, mapa)
     }
 
     fun listFromEstagiosParalelos(ordemProducao: Int): List<ObservacaoData> {
         val sql = (""
                 + "select * from PACIFICOSUL.PS_TB_OBS_200 a "
-                + "where a.ORDEM_PRODUCAO = ? "
+                + "where a.ORDEM_PRODUCAO = :ordemProducao "
                 + "and exists (select "
                 + "  1 "
                 + "from ( "
@@ -97,13 +107,17 @@ class ObservacaoRepository(private val jdbcTemplate: JdbcTemplate) {
                 + "    left join basi_180 on (pcpc_040.CODIGO_FAMILIA = basi_180.DIVISAO_PRODUCAO) "
                 + "    join pcpc_020 on (pcpc_040.ORDEM_PRODUCAO = pcpc_020.ORDEM_PRODUCAO) left join basi_295 on (basi_030.artigo_cotas = basi_295.artigo_cotas) "
                 + "    where pcpc_020.COD_CANCELAMENTO = 0 "
-                + "          and (pcpc_040.ORDEM_PRODUCAO = ?) "
+                + "          and (pcpc_040.ORDEM_PRODUCAO = :ordemProducao) "
                 + "          and (pcpc_020.PERIODO_PRODUCAO between 0 and 9999 or pcpc_020.TIPO_ORDEM = 2 or pcpc_020.TIPO_ORDEM = 3) "
                 + ") ordpend "
                 + "where ordpend.codigo_estagio = substr(a.estagio,2,2) "
                 + "having sum(qtde_pendente) > 0) "
                 + "order by a.data_observacao desc")
-        return jdbcTemplate.query(sql, arrayOf(ordemProducao, ordemProducao)) {
+
+        val mapa = HashMap<String, Any>()
+        mapa["ordemProducao"] = ordemProducao
+
+        return jdbcTemplate.query(sql, mapa) {
             rs, _ -> ObservacaoData(
                 ordemProducao, rs.getString("usuario"), rs.getString("observacao"),
                 rs.getInt("sequencia"), rs.getString("estagio"), rs.getDate("data_observacao"))
