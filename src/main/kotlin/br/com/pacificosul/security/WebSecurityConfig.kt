@@ -44,11 +44,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
         configuration.allowedOrigins = arrayListOf("http://localhost:3000")
-        configuration.addAllowedMethod(HttpMethod.POST)
-        configuration.addAllowedMethod(HttpMethod.PUT)
-        configuration.addAllowedMethod(HttpMethod.OPTIONS)
-        configuration.addAllowedMethod(HttpMethod.GET)
-        configuration.addAllowedMethod(HttpMethod.DELETE)
+        configuration.allowedMethods = arrayListOf("POST", "PUT", "OPTIONS", "GET", "DELETE")
         configuration.maxAge = 3600
         configuration.allowedHeaders = arrayListOf("Authorization", "Origin", "Content-Type")
         configuration.exposedHeaders = arrayListOf("Authorization", "Origin", "Content-Type")
