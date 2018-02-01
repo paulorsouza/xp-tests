@@ -14,14 +14,4 @@ class OrdensPendentesNoEstagiosController : DefaultController() {
                                             @RequestParam(name="listaEstagios", defaultValue = "", required = false) estagios: List<Int>): List<OrdensAProduzirData> {
         return OrdensAProduzirRepository(oracleTemplate).get(periodos,estagios)
     }
-
-    /*@GetMapping("/produto")
-    fun getPentendeEstagioPorProduto(@RequestParam(name="produto", defaultValue = "",required = false) produto: List<Int>): List<PeriodoProducaoAbertoData> {
-        return PeriodoProducaoAbertoRepository(oracleTemplate).get(estagios)
-    }
-
-    @GetMapping("/ordem-producao")
-    fun getPentendeEstagioPorOrdemProducao(@RequestParam(name="listaEstagios", defaultValue = "",required = false) estagios: List<Int>): List<PeriodoProducaoAbertoData> {
-        return PeriodoProducaoAbertoRepository(oracleTemplate).get(estagios)
-    }*/
 }

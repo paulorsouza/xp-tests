@@ -5,8 +5,8 @@ import br.com.pacificosul.model.Referencia
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 
-class NecessidadesRepository() {
-    fun insumoNecessidadeByOrdem(jdbcTemplate: JdbcTemplate, ordemProducao: Int): List<InsumoNecessidadeData> {
+class NecessidadesRepository(private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate) {
+    fun insumoNecessidadeByOrdem(ordemProducao: Int): List<InsumoNecessidadeData> {
         val sql = "select consulta.* from "+
                 "(select a.NIVEL_ESTRUTURA,a.GRUPO_ESTRUTURA,a.SUBGRU_ESTRUTURA,a.ITEM_ESTRUTURA, "+
                 "(a.NIVEL_ESTRUTURA || '.' || a.GRUPO_ESTRUTURA || '.' || a.SUBGRU_ESTRUTURA || '.' ||a.ITEM_ESTRUTURA) codigo, "+
@@ -37,10 +37,9 @@ class NecessidadesRepository() {
                 "order by a.NIVEL_ESTRUTURA "+
                 ") consulta "
 
-        var namedJdbc = NamedParameterJdbcTemplate(jdbcTemplate.dataSource)
         val mapa = HashMap<String, Any>()
         mapa.set("ordemProducao",ordemProducao)
-        return namedJdbc.query(sql, mapa) {
+        return namedParameterJdbcTemplate.query(sql, mapa) {
             rs, _ -> InsumoNecessidadeData(Referencia(rs.getString("nivel_estrutura"), rs.getString("grupo_estrutura"),
                 rs.getString("subgru_estrutura"), rs.getString("item_estrutura")), rs.getBigDecimal("estoque_atual"),
                 rs.getBigDecimal("qtd_a_receber"), rs.getBigDecimal("qtde_reservada_global"), rs.getString("descricao"),

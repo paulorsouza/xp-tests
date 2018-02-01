@@ -2,8 +2,9 @@ package br.com.pacificosul.repository.ordens
 
 import br.com.pacificosul.data.ordens.EstagiosAProduzir200Data
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 
-class PendenteEstagioRepository(private val jdbcTemplate: JdbcTemplate) {
+class PendenteEstagioRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
     fun get(periodosConcatenados: String = ""): List<EstagiosAProduzir200Data> {
         val filtro = if (!periodosConcatenados.isNullOrEmpty()) "AND PCPC_020.PERIODO_PRODUCAO IN (?) " else " "
 

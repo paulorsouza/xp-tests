@@ -12,6 +12,6 @@ class NecessidadesApi : DefaultController() {
     @GetMapping("/insumosNecessidade")
     fun getInsumosNecessidadeByOrdemProducao(
             @RequestParam(name="ordemProducao",required = true)ordemProducao: Int)
-            : List<InsumoNecessidadeData> = NecessidadesRepository()
-                .insumoNecessidadeByOrdem(oracleTemplate, ordemProducao)
+            : List<InsumoNecessidadeData> = NecessidadesRepository(oracleTemplate)
+                .insumoNecessidadeByOrdem(ordemProducao)
 }
