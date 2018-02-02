@@ -51,12 +51,12 @@ class ObservacaoRepository(private val jdbcTemplate: NamedParameterJdbcTemplate)
                 "left join pacificosul.ps_tb_usuario on (ps_tb_movimentacao_obs.cod_usuario = ps_tb_usuario.cod_usuario) " +
                 "left join pacificosul.ps_tb_fase on (ps_tb_movimentacao_obs.cod_fase = ps_tb_fase.cod_fase) " +
                 "where cod_referencia = :codReferencia " +
-                "order by dat_obs des "
+                "order by dat_obs desc "
         val mapa = HashMap<String, Any>()
-        mapa["codReferencia"] = codReferencia
+        mapa["codReferencia"] = codReferencia.toString()
         return jdbcTemplate.query(sql, mapa) {
             rs, _ -> ObservacaoData(null, rs.getString("apelido"),
-                rs.getString("obs"), 1, rs.getString("fase "), rs.getDate("data"))
+                rs.getString("obs"), 1, rs.getString("fase"), rs.getDate("data"))
         }.orEmpty()
     }
 

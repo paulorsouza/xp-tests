@@ -61,5 +61,4 @@ class ImagesController {
         val file = File(imagePath)
         return file.readBytes()
     }
-
 }

@@ -2,7 +2,6 @@ package br.com.pacificosul.repository
 
 import br.com.pacificosul.data.PedidosRecebidosData
 import br.com.pacificosul.data.TotalPedidosRecebidosData
-import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.sql.Date
 
@@ -69,11 +68,11 @@ class TotalPedidosRecebidosRepository(private val jdbcTemplate: NamedParameterJd
         sql.append("cliente.`nom_cliente`,cliente.`des_cidade`, num_pedidovinculado, qtd_pedido, ")
         sql.append("if(des_periodo <> '',des_periodo,'PRONTA ENTREGA') as des_periodo, ")
         sql.append("if(rep_pedido.`cod_sistema` = 1, ")
-        sql.append("(select if(count(*)<>1,'Não','') as pertence_regiao from regiao a ")
+        sql.append("(select if(count(*)<>1,'Nï¿½o','') as pertence_regiao from regiao a ")
         sql.append("where a.cod_cidade = cliente.cod_cidade ")
         sql.append("and a.`cod_representante` = representante.cod_representante ")
         sql.append("and a.`cod_marca` = periodo.cod_marca), ")
-        sql.append("(select if(count(*)=0,'Não','') as pertence_regiao from regiao a ")
+        sql.append("(select if(count(*)=0,'Nï¿½o','') as pertence_regiao from regiao a ")
         sql.append("where a.cod_cidade = cliente.cod_cidade ")
         sql.append("and a.`cod_representante` = representante.cod_representante) ")
         sql.append(") as pertence_regiao, ")
@@ -84,7 +83,7 @@ class TotalPedidosRecebidosRepository(private val jdbcTemplate: NamedParameterJd
         sql.append("and a.`cod_marca` = periodo.cod_marca) as rep_regiao, ")
         sql.append("(select GROUP_CONCAT(a.`cod_marca`) from representante_marca a ")
         sql.append("where a.`cod_representante` = representante.cod_representante) as marcas, ")
-        sql.append("(select if(count(*)=1,'Sim','Não') from pedido ")
+        sql.append("(select if(count(*)=1,'Sim','Nï¿½o') from pedido ")
         sql.append("where pedido.num_pedido = rep_pedido.num_pedido ")
         sql.append("and pedido.cod_representante = rep_pedido.cod_representante) as pedido_integrado ")
 
