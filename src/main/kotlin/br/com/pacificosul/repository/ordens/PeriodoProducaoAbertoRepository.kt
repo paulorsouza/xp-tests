@@ -9,7 +9,7 @@ class PeriodoProducaoAbertoRepository(private val namedParameterJdbcTemplate: Na
 
         val sql =   "select PERIODO_PRODUCAO, DES_PERIODO, count(DISTINCT ORDEM_PRODUCAO) as qtd_op," +
                     "sum(QTDE_EM_PRODUCAO_PACOTE) as QTDE_EM_PRODUCAO_PACOTE, decode(ORDENACAO,99,'',ordenacao) as ordenacao," +
-                    "(PERIODO_PRODUCAO || ' - ' || DES_PERIODO) as cod_des_periodo " +
+                    "nvl(PERIODO_PRODUCAO || ' - ' || DES_PERIODO, ' ') as cod_des_periodo " +
                     "from ( " +
                     "select a.PERIODO_PRODUCAO, c.DES_PERIODO, a.ORDEM_PRODUCAO, b.CODIGO_ESTAGIO, c.SIT_CONSIDERA_CONSULTA,decode(c.ORDENACAO,0,99,c.ORDENACAO) as ORDENACAO, " +
                     "(case " +
@@ -31,7 +31,7 @@ class PeriodoProducaoAbertoRepository(private val namedParameterJdbcTemplate: Na
 
         return namedParameterJdbcTemplate.query(sql, mapa) {
             rs, _ -> PeriodoProducaoAbertoData(rs.getInt("PERIODO_PRODUCAO"),
-                rs.getString("DES_PERIODO"), rs.getInt("QTDE_EM_PRODUCAO_PACOTE"), rs.getInt("qtd_op"))
+                rs.getNString("DES_PERIODO"), rs.getInt("QTDE_EM_PRODUCAO_PACOTE"), rs.getInt("qtd_op"))
         }.orEmpty()
 
     }

@@ -14,9 +14,10 @@ class EstoqueRepository(private val namedParameterJdbcTemplate: NamedParameterJd
                 " and estq_040.cditem_grupo = :grupo" +
                 " and estq_040.cditem_subgrupo = :subgrupo" +
                 " and estq_040.cditem_item = :item" +
-                " and estq_040.qtde_estoque_atu <> 0"
-        if (isTmrp) sql.plus(" and basi_205.considera_trmp = 1")
-        sql.plus(" group by estq_040.deposito, basi_205.descricao")
+                " and estq_040.qtde_estoque_atu <> 0" +
+        if (isTmrp) {
+            " and basi_205.considera_tmrp = 1 group by estq_040.deposito, basi_205.descricao"
+        } else " group by estq_040.deposito, basi_205.descricao"
 
         val mapa = HashMap<String, Any>()
         mapa["nivel"] = referencia.nivel
