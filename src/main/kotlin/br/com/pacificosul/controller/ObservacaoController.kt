@@ -3,6 +3,7 @@ package br.com.pacificosul.controller
 import br.com.pacificosul.data.ObservacaoData
 import br.com.pacificosul.repository.ObservacaoRepository
 import br.com.pacificosul.repository.UserRepository
+import br.com.pacificosul.rules.getCodigoUsuario
 import br.com.pacificosul.security.TokenClaims
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
@@ -44,8 +45,7 @@ class ObservacaoController : DefaultController() {
     fun addObservacao(authentication: Authentication,
                       @PathVariable("numeroOp") numeroOp: Int,
                       @RequestBody payload: Payload): ObservacaoData {
-        val claims = authentication.principal as TokenClaims
-        val codUsuario = Integer.parseInt(claims.cod_usuario)
+        val codUsuario = getCodigoUsuario(authentication)
         val nome = UserRepository(oracleTemplate).getNomeUsuario(codUsuario)
         ObservacaoRepository(oracleTemplate).addObservacao(nome.orEmpty(),
                 numeroOp, payload.observacao.orEmpty(), payload.descEstagio.orEmpty())
