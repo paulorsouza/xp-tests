@@ -24,7 +24,7 @@ class PrioridadeOpController : DefaultController() {
             return ResponseEntity(HttpStatus.UNPROCESSABLE_ENTITY)
         }
         rep.marcarPrioridade(numeroOp, grupo, codUsuario)
-        return ResponseEntity(HttpStatus.CREATED)
+        return ResponseEntity(HttpStatus.OK)
     }
 
     @PostMapping("/op/{numeroOp}/desmarcar")
@@ -32,17 +32,18 @@ class PrioridadeOpController : DefaultController() {
                      @PathVariable("numeroOp") numeroOp: Int): ResponseEntity<Any> {
         val codUsuario = getCodigoUsuario(authentication)
         val rep = PrioridadeOpRepository(oracleTemplate)
-        if (rep.permiteDesmarcarPrioridade(numeroOp)) {
+        if (!rep.permiteDesmarcarPrioridade(numeroOp)) {
             return ResponseEntity(HttpStatus.UNPROCESSABLE_ENTITY)
         }
         rep.desmarcarPrioridade(numeroOp, codUsuario)
-        return ResponseEntity(HttpStatus.CREATED)
+        return ResponseEntity(HttpStatus.OK)
     }
 
     @PostMapping("/desmarcarTodos")
     fun desmarcarTodosUti(authentication: Authentication,
-                          @RequestBody payload: List<String>): ResponseEntity<Any> {
+                          @RequestBody payload: List<Int>): List<Int> {
         val codUsuario = getCodigoUsuario(authentication)
-        return ResponseEntity(HttpStatus.UNPROCESSABLE_ENTITY)
+        val rep = PrioridadeOpRepository(oracleTemplate)
+        return rep.desmarcarTodos(payload, codUsuario)
     }
 }

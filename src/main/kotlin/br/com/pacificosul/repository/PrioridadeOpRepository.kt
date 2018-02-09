@@ -16,6 +16,7 @@ class PrioridadeOpRepository(private val jdbcTemplate: NamedParameterJdbcTemplat
     }
 
     fun permiteDesmarcarPrioridade(op: Int): Boolean {
+        println(op)
         val sql = "select 1 from pacificosul.ps_tb_op_uti a " +
                 "where a.ordem_producao = :ordem_producao " +
                 "and dat_saida is null "
@@ -41,11 +42,12 @@ class PrioridadeOpRepository(private val jdbcTemplate: NamedParameterJdbcTemplat
     }
 
     fun desmarcarPrioridade(op: Int, codUsuario: Int): Int {
+        println(op)
         val sql = "update pacificosul.ps_tb_op_uti " +
                 "set sit_ativo = 0, " +
-                "    data_saida = sysdate, " +
+                "    dat_saida = sysdate, " +
                 "    cod_usuario_saida = :cod_usuario " +
-                "where a.ordem_producao = :ordem_producao " +
+                "where ordem_producao = :ordem_producao " +
                 "  and dat_saida is null "
         val mapa = HashMap<String, Any>()
         mapa["ordem_producao"] = op
@@ -53,4 +55,31 @@ class PrioridadeOpRepository(private val jdbcTemplate: NamedParameterJdbcTemplat
         return jdbcTemplate.update(sql, mapa)
     }
 
+    fun desmarcarTodos(ordensDeProducao: List<Int>, codUsuario: Int): List<Int> {
+        val desmarcados = arrayListOf<Int>()
+        ordensDeProducao.forEach { op ->
+            println(op)
+            if(permiteDesmarcarPrioridade(op)) {
+                if(desmarcarPrioridade(op, codUsuario) > 0) {
+                    desmarcados.add(op)
+                }
+            }
+        }
+        /* TODO verificar como usar update returning com jdbctemplate para nao precisar fazer o processo 1 por 1 */
+        /*
+            declare
+            TYPE t_teste IS TABLE OF number;
+            teste t_teste;
+            begin
+            update pacificosul.ps_tb_op_uti
+            set sit_ativo = 0,
+            dat_saida = sysdate,
+            cod_usuario_saida = 7
+            where ordem_producao in (100550, 100549, 100590, 100640, 97340, 11231)
+            and dat_saida is null
+            RETURNING ordem_producao BULK COLLECT INTO teste;
+            end;
+        */
+        return desmarcados;
+    }
 }
