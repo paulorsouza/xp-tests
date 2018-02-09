@@ -4,7 +4,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 
 class PrioridadeOpRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
 
-    fun hasPrioridade(op: Int): Boolean {
+    fun temPrioridade(op: Int): Boolean {
         val sql = "select 1 from pacificosul.ps_tb_op_uti a " +
                 "where a.ordem_producao = :ordem_producao "
         val mapa = HashMap<String, Any>()
@@ -15,7 +15,7 @@ class PrioridadeOpRepository(private val jdbcTemplate: NamedParameterJdbcTemplat
         return result != null && result
     }
 
-    fun allowUnmarkPrioridade(op: Int): Boolean {
+    fun permiteDesmarcarPrioridade(op: Int): Boolean {
         val sql = "select 1 from pacificosul.ps_tb_op_uti a " +
                 "where a.ordem_producao = :ordem_producao " +
                 "and dat_saida is null "
@@ -27,7 +27,7 @@ class PrioridadeOpRepository(private val jdbcTemplate: NamedParameterJdbcTemplat
         return result != null && result
     }
 
-    fun markPrioridade(op: Int, grupo: String, codUsuario: Int): Int {
+    fun marcarPrioridade(op: Int, grupo: String, codUsuario: Int): Int {
         val sql = "insert into pacificosul.ps_tb_op_uti " +
                 "(ordem_producao, sit_ativo, nivel, grupo, dat_entrada, cod_usuario_entrada) " +
                 "values " +
@@ -40,7 +40,7 @@ class PrioridadeOpRepository(private val jdbcTemplate: NamedParameterJdbcTemplat
         return jdbcTemplate.update(sql, mapa)
     }
 
-    fun unmarkPrioridade(op: Int, codUsuario: Int): Int {
+    fun desmarcarPrioridade(op: Int, codUsuario: Int): Int {
         val sql = "update pacificosul.ps_tb_op_uti " +
                 "set sit_ativo = 0, " +
                 "    data_saida = sysdate, " +

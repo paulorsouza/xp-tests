@@ -20,10 +20,10 @@ class PrioridadeOpController : DefaultController() {
         val codUsuario = Integer.parseInt(claims.cod_usuario)
 
         val rep = PrioridadeOpRepository(oracleTemplate)
-        if (rep.hasPrioridade(numeroOp)) {
+        if (rep.temPrioridade(numeroOp)) {
             return ResponseEntity(HttpStatus.UNPROCESSABLE_ENTITY)
         }
-        rep.markPrioridade(numeroOp, grupo, codUsuario)
+        rep.marcarPrioridade(numeroOp, grupo, codUsuario)
         return ResponseEntity(HttpStatus.CREATED)
     }
 
@@ -34,10 +34,10 @@ class PrioridadeOpController : DefaultController() {
         val codUsuario = Integer.parseInt(claims.cod_usuario)
 
         val rep = PrioridadeOpRepository(oracleTemplate)
-        if (rep.allowUnmarkPrioridade(numeroOp)) {
+        if (rep.permiteDesmarcarPrioridade(numeroOp)) {
             return ResponseEntity(HttpStatus.UNPROCESSABLE_ENTITY)
         }
-        rep.unmarkPrioridade(numeroOp, codUsuario)
+        rep.desmarcarPrioridade(numeroOp, codUsuario)
         return ResponseEntity(HttpStatus.CREATED)
     }
 
