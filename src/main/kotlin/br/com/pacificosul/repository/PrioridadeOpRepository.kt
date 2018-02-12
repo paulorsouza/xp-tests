@@ -16,7 +16,6 @@ class PrioridadeOpRepository(private val jdbcTemplate: NamedParameterJdbcTemplat
     }
 
     fun permiteDesmarcarPrioridade(op: Int): Boolean {
-        println(op)
         val sql = "select 1 from pacificosul.ps_tb_op_uti a " +
                 "where a.ordem_producao = :ordem_producao " +
                 "and dat_saida is null "
@@ -42,7 +41,6 @@ class PrioridadeOpRepository(private val jdbcTemplate: NamedParameterJdbcTemplat
     }
 
     fun desmarcarPrioridade(op: Int, codUsuario: Int): Int {
-        println(op)
         val sql = "update pacificosul.ps_tb_op_uti " +
                 "set sit_ativo = 0, " +
                 "    dat_saida = sysdate, " +
@@ -58,7 +56,6 @@ class PrioridadeOpRepository(private val jdbcTemplate: NamedParameterJdbcTemplat
     fun desmarcarTodos(ordensDeProducao: List<Int>, codUsuario: Int): List<Int> {
         val desmarcados = arrayListOf<Int>()
         ordensDeProducao.forEach { op ->
-            println(op)
             if(permiteDesmarcarPrioridade(op)) {
                 if(desmarcarPrioridade(op, codUsuario) > 0) {
                     desmarcados.add(op)
