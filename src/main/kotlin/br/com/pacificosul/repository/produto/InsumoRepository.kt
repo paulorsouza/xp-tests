@@ -20,7 +20,7 @@ class InsumoRepository: ProdutoRepository {
         mapa["sub"] = sub
         mapa["item"] = item
         return jdbcTemplate.query(sql, mapa) {
-            rs, _ -> rs.getString("enderecos")
+            rs, _ -> rs.getString("endereco")
         }.firstOrNull()
     }
 }
