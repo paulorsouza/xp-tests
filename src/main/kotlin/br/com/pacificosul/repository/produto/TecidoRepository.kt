@@ -64,11 +64,20 @@ open class TecidoRepository : ProdutoRepository {
         val estqData = getEstoque(
                 data.nivel.orEmpty(), data.grupo.orEmpty(), data.subGrupo.orEmpty(), data.item.orEmpty()
         )
+        builder.appendln()
         val estoqueCalculado = estqData.first * data.rendimento!!
         builder.append("Estoque: ${estqData.first.setScale(2)} ")
         builder.append("${estqData.second}    |    ")
         builder.append("${estoqueCalculado.setScale(2)} metros    |    ")
         builder.append("Depositos: ${estqData.third}")
+        val estoquesReservados = getEstoqueReservado(
+                data.nivel.orEmpty(), data.grupo.orEmpty(), data.subGrupo.orEmpty(), data.item.orEmpty()
+        )
+        builder.append("A Receber: ${estoquesReservados.first.setScale(2)} ${data.unidadeMedida.orEmpty()} | ")
+        builder.append("${(estoquesReservados.first * data.rendimento!!).setScale(2)} metros")
+        builder.appendln()
+        builder.append("Reservado: ${estoquesReservados.second.setScale(2)} ${data.unidadeMedida.orEmpty()} | ")
+        builder.append("${(estoquesReservados.second * data.rendimento!!).setScale(2)} metros")
 
         return builder.toString()
     }

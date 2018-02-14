@@ -79,6 +79,7 @@ class PecaRepository: ProdutoRepository {
         builder.append("Estoque TMRP: ${trmpData.first.setScale(2)} ")
         builder.append("${trmpData.second}    |   ")
         builder.append("Depositos: ${trmpData.third}")
+        builder.appendln()
         val estqData = getStrEstoque(data.referencia.orEmpty())
         builder.append("Estoque: ${estqData.first.setScale(2)} ")
         builder.append("${estqData.second}    |   ")

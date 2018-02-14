@@ -47,9 +47,17 @@ class InsumoRepository: ProdutoRepository {
         val estqData = getEstoque(
                 "9", data.grupo.orEmpty(), data.subGrupo.orEmpty(), data.item.orEmpty()
         )
+        builder.appendln()
         builder.append("Estoque: ${estqData.first.setScale(2)} ")
         builder.append("${estqData.second}    |   ")
         builder.append("Depositos: ${estqData.third}")
+        builder.appendln()
+        val estoquesReservados = getEstoqueReservado(
+                "9", data.grupo.orEmpty(), data.subGrupo.orEmpty(), data.item.orEmpty()
+        )
+        builder.append("A Receber: ${estoquesReservados.first.setScale(2)} ${data.unidadeMedida.orEmpty()}")
+        builder.appendln()
+        builder.append("Reservado: ${estoquesReservados.second.setScale(2)} ${data.unidadeMedida.orEmpty()}")
         return builder.toString()
     }
 }

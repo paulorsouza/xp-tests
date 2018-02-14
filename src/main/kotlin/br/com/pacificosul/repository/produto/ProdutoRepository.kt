@@ -51,12 +51,17 @@ open class ProdutoRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
 
         sql.append("group by b.UNIDADE_MEDIDA")
 
-        return jdbcTemplate.query(sql.toString(), mapa) {
+        val result = jdbcTemplate.query(sql.toString(), mapa) {
             rs, _ -> Triple<BigDecimal, String, String>(
                 rs.getBigDecimal("estoque_atual"),
                 rs.getString("UNIDADE_MEDIDA"),
                 rs.getString("depositos"))
-        }.first()
+        }.firstOrNull()
+
+        if(result == null) {
+            return Triple(BigDecimal.ZERO, "", "")
+        }
+        return result
     }
 
     fun getEstoque(nivel: String, grupo: String, sub: String?, item: String?): Triple<BigDecimal, String, String> {
@@ -87,12 +92,45 @@ open class ProdutoRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
 
         sql.append("group by b.UNIDADE_MEDIDA")
 
-        return jdbcTemplate.query(sql.toString(), mapa) {
+        val result = jdbcTemplate.query(sql.toString(), mapa) {
             rs, _ -> Triple<BigDecimal, String, String>(
                 rs.getBigDecimal("estoque_atual"),
                 rs.getString("UNIDADE_MEDIDA"),
                 rs.getString("depositos"))
-        }.first()
+        }.firstOrNull()
+
+        if(result == null) {
+            return Triple(BigDecimal.ZERO, "", "")
+        }
+        return result
     }
+
+    fun getEstoqueReservado(nivel: String, grupo: String, sub: String, item: String) : Pair<BigDecimal, BigDecimal> {
+        val sql = "" +
+                "select sum(x.QTDE_ARECEBER) as QTDE_ARECEBER, sum(x.QTDE_RESERVADA) as QTDE_RESERVADA_GLOBAL " +
+                "from tmrp_041 x " +
+                "where x.NIVEL_ESTRUTURA = :nivel " +
+                "  and x.GRUPO_ESTRUTURA = :grupo " +
+                "  and x.SUBGRU_ESTRUTURA = :sub" +
+                "  and x.ITEM_ESTRUTURA = :item " +
+                "  and x.periodo_producao > 0 "
+        val mapa = HashMap<String, Any>()
+        mapa["nivel"] = nivel
+        mapa["grupo"] = grupo
+        mapa["sub"] = sub
+        mapa["item"] = item
+
+        val result = jdbcTemplate.query(sql.toString(), mapa) {
+            rs, _ -> Pair<BigDecimal, BigDecimal>(
+                rs.getBigDecimal("QTDE_ARECEBER"),
+                rs.getBigDecimal("QTDE_RESERVADA_GLOBAL"))
+        }.firstOrNull()
+
+        if(result == null) {
+            return Pair(BigDecimal.ZERO, BigDecimal.ZERO)
+        }
+        return result
+    }
+
 }
 
