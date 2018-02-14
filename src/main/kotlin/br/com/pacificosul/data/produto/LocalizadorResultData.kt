@@ -1,8 +1,5 @@
 package br.com.pacificosul.data.produto
 
-import com.fasterxml.jackson.annotation.JsonInclude
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
 data class LocalizadorResultData(val nivel_estrutura: String?, val grupo_estrutura: String?,
                                  val subgru_estrutura: String?, val item_estrutura: String?,
                                  val descricao: String?, val complemento: String?,
