@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.*
 class ProdutoController : DefaultController() {
 
     @PostMapping("/localizarProdutos")
-    fun localizarProdutos(authentication: Authentication,
-                          @RequestBody payload: LocalizadorData): List<LocalizadorResultData> {
+    fun localizarProdutos(@RequestBody payload: LocalizadorData): List<LocalizadorResultData> {
         val rep = LocalizadorRepository(oracleTemplate)
         return rep.listProdutos(payload)
     }

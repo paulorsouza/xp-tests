@@ -1,4 +1,7 @@
 package br.com.pacificosul.repository.produto
 
-open class TecidoRepository : ProdutoRepository() {
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
+
+open class TecidoRepository : ProdutoRepository {
+    constructor(jdbcTemplate: NamedParameterJdbcTemplate) : super(jdbcTemplate)
 }
