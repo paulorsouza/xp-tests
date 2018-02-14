@@ -1,0 +1,3 @@
+package br.com.pacificosul.repository.produto
+
+class TecidoAcabadoRepository: TecidoRepository() {}

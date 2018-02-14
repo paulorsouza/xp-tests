@@ -1,8 +1,8 @@
 package br.com.pacificosul.controller
 
-import br.com.pacificosul.data.LocalizadorData
-import br.com.pacificosul.data.LocalizadorResultData
-import br.com.pacificosul.repository.ProdutoRepository
+import br.com.pacificosul.data.produto.LocalizadorData
+import br.com.pacificosul.data.produto.LocalizadorResultData
+import br.com.pacificosul.repository.produto.LocalizadorRepository
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 
@@ -14,7 +14,7 @@ class ProdutoController : DefaultController() {
     @PostMapping("/localizarProdutos")
     fun localizarProdutos(authentication: Authentication,
                           @RequestBody payload: LocalizadorData): List<LocalizadorResultData> {
-        val rep = ProdutoRepository(oracleTemplate)
+        val rep = LocalizadorRepository(oracleTemplate)
         return rep.listProdutos(payload)
     }
 
