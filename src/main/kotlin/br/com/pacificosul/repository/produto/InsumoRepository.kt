@@ -75,6 +75,7 @@ class InsumoRepository: ProdutoRepository {
         val estoquesReservados = getEstoqueReservado(
                 "9", data.grupo.orEmpty(), data.subGrupo.orEmpty(), data.item.orEmpty()
         )
+        builder.appendln()
         builder.append("A Receber: ${estoquesReservados.first?.setScale(2, BigDecimal.ROUND_UP)} ${data.unidadeMedida.orEmpty()}")
         builder.appendln()
         builder.append("Reservado: ${estoquesReservados.second?.setScale(2, BigDecimal.ROUND_UP)} ${data.unidadeMedida.orEmpty()}")

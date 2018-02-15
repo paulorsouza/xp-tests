@@ -95,6 +95,7 @@ open class TecidoRepository : ProdutoRepository {
         val estoquesReservados = getEstoqueReservado(
                 data.nivel.orEmpty(), data.grupo.orEmpty(), data.subGrupo.orEmpty(), data.item.orEmpty()
         )
+        builder.appendln()
         builder.append("A Receber: ${estoquesReservados.first?.setScale(2, BigDecimal.ROUND_UP)} ${data.unidadeMedida.orEmpty()} | ")
         builder.append("${(estoquesReservados.first?.multiply(data.rendimento!!))?.setScale(2, BigDecimal.ROUND_UP)} metros")
         builder.appendln()
