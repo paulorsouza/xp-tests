@@ -63,7 +63,7 @@ open class TecidoRepository : ProdutoRepository {
                data.nivel.orEmpty(), data.grupo.orEmpty(), data.subGrupo.orEmpty(), data.item.orEmpty()
         )
 
-        builder.append("Custo informado: R$ ${custo.setScale(2)} + Kg | ")
+        builder.append("Custo informado: R$ ${custo.setScale(2, BigDecimal.ROUND_UP)} + Kg | ")
         if(data.largura1 != null && data.largura1!! > BigDecimal.ZERO
                 && data.gramatura1 != null && data.rendimento!! > BigDecimal.ZERO){
             val m2 = (custo/data.rendimento!!) / data.largura1!!
