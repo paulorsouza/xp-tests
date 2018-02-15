@@ -1,5 +1,6 @@
 package br.com.pacificosul.repository.produto
 
+import br.com.pacificosul.data.produto.ProdutoData
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.math.BigDecimal
 
@@ -130,6 +131,29 @@ open class ProdutoRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
             return Pair(BigDecimal.ZERO, BigDecimal.ZERO)
         }
         return result
+    }
+
+    fun getProdutoDataSql(nivel: String, grupo: String, sub: String, item: String) : Pair<String, HashMap<String, Any>> {
+        val sql = "" +
+                "select (a.descr_referencia || '' / '' || g.descr_tam_refer || '' / '' || f.DESCRICAO_15) as descricao, " +
+                "g.RENDIMENTO,a.UNIDADE_MEDIDA,g.GRAMATURA_1, g.LARGURA_1, d.DESCR_ARTIGO as artigo_cota, i.DESCR_CT_ESTOQUE, f.COMPLEMENTO from basi_010 f " +
+                "left join basi_030 a on (a.NIVEL_ESTRUTURA = f.NIVEL_ESTRUTURA and a.REFERENCIA = f.GRUPO_ESTRUTURA)') " +
+                "left join basi_020 g on (g.BASI030_NIVEL030 = a.NIVEL_ESTRUTURA and g.BASI030_REFERENC = a.REFERENCIA and g.TAMANHO_REF = f.SUBGRU_ESTRUTURA) "
+                "left join basi_140 b on (b.COLECAO = a.COLECAO) " +
+                "left join basi_290 c on (c.ARTIGO = a.ARTIGO) " +
+                "left join basi_295 d on (d.ARTIGO_COTAS = a.ARTIGO_COTAS) " +
+                "left join basi_210 e on (e.SERIE_TAMANHO = a.SERIE_TAMANHO) " +
+                "left join basi_150 i on (i.conta_estoque = a.conta_estoque) " +
+                "where f.NIVEL_ESTRUTURA = :nivel " +
+                "and f.GRUPO_ESTRUTURA = :grupo " +
+                "and f.SUBGRU_ESTRUTURA = :sub " +
+                "and f.ITEM_ESTRUTURA = :item "
+        val mapa = HashMap<String, Any>()
+        mapa["nivel"] = nivel
+        mapa["grupo"] = grupo
+        mapa["sub"] = sub
+        mapa["item"] = item
+        return Pair(sql.toString(), mapa)
     }
 
 }

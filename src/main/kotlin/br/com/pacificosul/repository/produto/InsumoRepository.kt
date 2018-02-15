@@ -25,6 +25,24 @@ class InsumoRepository: ProdutoRepository {
         }.firstOrNull()
     }
 
+    fun getInsumosData(nivel: String, grupo: String, sub: String, item: String): InsumoData? {
+        val sql = getProdutoDataSql(nivel, grupo, sub, item)
+        return jdbcTemplate.query(sql.first, sql.second) {
+            rs, _ ->
+            val data = InsumoData()
+            data.descricao = rs.getString("descricao")
+            data.unidadeMedida = rs.getString("UNIDADE_MEDIDA")
+            data.artigoCota = rs.getString("artigo_cota")
+            data.descrCtEstoque = rs.getString("DESCR_CT_ESTOQUE")
+            data.complemento = rs.getString("COMPLEMENTO")
+            data.nivel = nivel
+            data.grupo = grupo
+            data.subGrupo = sub
+            data.item = item
+            data
+        }.firstOrNull()
+    }
+
     override fun <T> getText(data: T): String {
         val data = data as InsumoData
         val builder = StringBuilder()

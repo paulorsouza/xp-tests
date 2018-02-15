@@ -27,6 +27,27 @@ open class TecidoRepository : ProdutoRepository {
         }.first()
     }
 
+    fun getTecidoData(nivel: String, grupo: String, sub: String, item: String): TecidoData? {
+        val sql = getProdutoDataSql(nivel, grupo, sub, item)
+        return jdbcTemplate.query(sql.first, sql.second) {
+            rs, _ ->
+                val data = TecidoData()
+                data.descricao = rs.getString("descricao")
+                data.rendimento = rs.getBigDecimal("RENDIMENTO")
+                data.unidadeMedida = rs.getString("UNIDADE_MEDIDA")
+                data.gramatura1 = rs.getBigDecimal("GRAMATURA_1")
+                data.largura1 = rs.getBigDecimal("LARGURA_1")
+                data.artigoCota = rs.getString("artigo_cota")
+                data.descrCtEstoque = rs.getString("DESCR_CT_ESTOQUE")
+                data.complemento = rs.getString("COMPLEMENTO")
+                data.nivel = nivel
+                data.grupo = grupo
+                data.subGrupo = sub
+                data.item = item
+                data
+        }.firstOrNull()
+    }
+
     override fun <T> getText(data: T): String {
         val data = data as TecidoData
         val builder = StringBuilder()

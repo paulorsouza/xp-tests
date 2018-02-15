@@ -9,6 +9,7 @@ open class ProdutoData {
     var grupo: String? = null
     var subGrupo: String? = null
     var item: String? = null
+    var descricao: String? = null
     var descrReferencia: String? = null
     var descrTamRefer: String? = null
     var descricao15: String? = null
