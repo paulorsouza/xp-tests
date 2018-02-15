@@ -106,7 +106,7 @@ open class ProdutoRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
         return result
     }
 
-    fun getEstoqueReservado(nivel: String, grupo: String, sub: String, item: String) : Pair<BigDecimal, BigDecimal> {
+    fun getEstoqueReservado(nivel: String, grupo: String, sub: String, item: String) : Pair<BigDecimal?, BigDecimal?> {
         val sql = "" +
                 "select sum(x.QTDE_ARECEBER) as QTDE_ARECEBER, sum(x.QTDE_RESERVADA) as QTDE_RESERVADA_GLOBAL " +
                 "from tmrp_041 x " +
@@ -122,7 +122,7 @@ open class ProdutoRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
         mapa["item"] = item
 
         val result = jdbcTemplate.query(sql.toString(), mapa) {
-            rs, _ -> Pair<BigDecimal, BigDecimal>(
+            rs, _ -> Pair<BigDecimal?, BigDecimal?>(
                 rs.getBigDecimal("QTDE_ARECEBER"),
                 rs.getBigDecimal("QTDE_RESERVADA_GLOBAL"))
         }.firstOrNull()
@@ -135,10 +135,10 @@ open class ProdutoRepository(val jdbcTemplate: NamedParameterJdbcTemplate) {
 
     fun getProdutoDataSql(nivel: String, grupo: String, sub: String, item: String) : Pair<String, HashMap<String, Any>> {
         val sql = "" +
-                "select (a.descr_referencia || '' / '' || g.descr_tam_refer || '' / '' || f.DESCRICAO_15) as descricao, " +
+                "select (a.descr_referencia || ' / ' || g.descr_tam_refer || ' / ' || f.DESCRICAO_15) as descricao, " +
                 "g.RENDIMENTO,a.UNIDADE_MEDIDA,g.GRAMATURA_1, g.LARGURA_1, d.DESCR_ARTIGO as artigo_cota, i.DESCR_CT_ESTOQUE, f.COMPLEMENTO from basi_010 f " +
-                "left join basi_030 a on (a.NIVEL_ESTRUTURA = f.NIVEL_ESTRUTURA and a.REFERENCIA = f.GRUPO_ESTRUTURA)') " +
-                "left join basi_020 g on (g.BASI030_NIVEL030 = a.NIVEL_ESTRUTURA and g.BASI030_REFERENC = a.REFERENCIA and g.TAMANHO_REF = f.SUBGRU_ESTRUTURA) "
+                "left join basi_030 a on (a.NIVEL_ESTRUTURA = f.NIVEL_ESTRUTURA and a.REFERENCIA = f.GRUPO_ESTRUTURA) " +
+                "left join basi_020 g on (g.BASI030_NIVEL030 = a.NIVEL_ESTRUTURA and g.BASI030_REFERENC = a.REFERENCIA and g.TAMANHO_REF = f.SUBGRU_ESTRUTURA) " +
                 "left join basi_140 b on (b.COLECAO = a.COLECAO) " +
                 "left join basi_290 c on (c.ARTIGO = a.ARTIGO) " +
                 "left join basi_295 d on (d.ARTIGO_COTAS = a.ARTIGO_COTAS) " +

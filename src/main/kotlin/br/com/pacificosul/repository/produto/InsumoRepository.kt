@@ -2,6 +2,7 @@ package br.com.pacificosul.repository.produto
 
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import br.com.pacificosul.data.produto.InsumoData
+import java.math.BigDecimal
 
 class InsumoRepository: ProdutoRepository {
     constructor(jdbcTemplate: NamedParameterJdbcTemplate) : super(jdbcTemplate)
@@ -59,23 +60,24 @@ class InsumoRepository: ProdutoRepository {
         val trmpData = getEstoqueTmrp(
                 "9", data.grupo.orEmpty(), data.subGrupo.orEmpty(), data.item.orEmpty()
         )
-        builder.append("Estoque TMRP: ${trmpData.first.setScale(2)} ")
+        builder.appendln()
+        builder.append("Estoque TMRP: ${trmpData.first.setScale(2, BigDecimal.ROUND_UP)} ")
         builder.append("${trmpData.second}    |   ")
         builder.append("Depositos: ${trmpData.third}")
         val estqData = getEstoque(
                 "9", data.grupo.orEmpty(), data.subGrupo.orEmpty(), data.item.orEmpty()
         )
         builder.appendln()
-        builder.append("Estoque: ${estqData.first.setScale(2)} ")
+        builder.append("Estoque: ${estqData.first.setScale(2, BigDecimal.ROUND_UP)} ")
         builder.append("${estqData.second}    |   ")
         builder.append("Depositos: ${estqData.third}")
         builder.appendln()
         val estoquesReservados = getEstoqueReservado(
                 "9", data.grupo.orEmpty(), data.subGrupo.orEmpty(), data.item.orEmpty()
         )
-        builder.append("A Receber: ${estoquesReservados.first.setScale(2)} ${data.unidadeMedida.orEmpty()}")
+        builder.append("A Receber: ${estoquesReservados.first?.setScale(2, BigDecimal.ROUND_UP)} ${data.unidadeMedida.orEmpty()}")
         builder.appendln()
-        builder.append("Reservado: ${estoquesReservados.second.setScale(2)} ${data.unidadeMedida.orEmpty()}")
+        builder.append("Reservado: ${estoquesReservados.second?.setScale(2, BigDecimal.ROUND_UP)} ${data.unidadeMedida.orEmpty()}")
         return builder.toString()
     }
 }

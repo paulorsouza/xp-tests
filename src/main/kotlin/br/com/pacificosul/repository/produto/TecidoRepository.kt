@@ -67,7 +67,7 @@ open class TecidoRepository : ProdutoRepository {
         if(data.largura1 != null && data.largura1!! > BigDecimal.ZERO
                 && data.gramatura1 != null && data.rendimento!! > BigDecimal.ZERO){
             val m2 = (custo/data.rendimento!!) / data.largura1!!
-            builder.append("R$ ${m2.setScale(2)}, m2")
+            builder.append("R$ ${m2.setScale(2, BigDecimal.ROUND_UP)}, m2")
             builder.appendln()
         } else {
             builder.append("largura ou rendimento está ZERO.")
@@ -76,10 +76,11 @@ open class TecidoRepository : ProdutoRepository {
         val tmprData = getEstoqueTmrp(
                 data.nivel.orEmpty(), data.grupo.orEmpty(), data.subGrupo.orEmpty(), data.item.orEmpty()
         )
+        builder.appendln()
         val estoqueTmrpCalculado = tmprData.first * data.rendimento!!
-        builder.append("Estoque TMRP: ${tmprData.first.setScale(2)} ")
+        builder.append("Estoque TMRP: ${tmprData.first.setScale(2, BigDecimal.ROUND_UP)} ")
         builder.append("${tmprData.second}    |    ")
-        builder.append("${estoqueTmrpCalculado.setScale(2)} metros    |    ")
+        builder.append("${estoqueTmrpCalculado.setScale(2, BigDecimal.ROUND_UP)} metros    |    ")
         builder.append("Depositos: ${tmprData.third}")
 
         val estqData = getEstoque(
@@ -87,18 +88,18 @@ open class TecidoRepository : ProdutoRepository {
         )
         builder.appendln()
         val estoqueCalculado = estqData.first * data.rendimento!!
-        builder.append("Estoque: ${estqData.first.setScale(2)} ")
+        builder.append("Estoque: ${estqData.first.setScale(2, BigDecimal.ROUND_UP)} ")
         builder.append("${estqData.second}    |    ")
-        builder.append("${estoqueCalculado.setScale(2)} metros    |    ")
+        builder.append("${estoqueCalculado.setScale(2, BigDecimal.ROUND_UP)} metros    |    ")
         builder.append("Depositos: ${estqData.third}")
         val estoquesReservados = getEstoqueReservado(
                 data.nivel.orEmpty(), data.grupo.orEmpty(), data.subGrupo.orEmpty(), data.item.orEmpty()
         )
-        builder.append("A Receber: ${estoquesReservados.first.setScale(2)} ${data.unidadeMedida.orEmpty()} | ")
-        builder.append("${(estoquesReservados.first * data.rendimento!!).setScale(2)} metros")
+        builder.append("A Receber: ${estoquesReservados.first?.setScale(2, BigDecimal.ROUND_UP)} ${data.unidadeMedida.orEmpty()} | ")
+        builder.append("${(estoquesReservados.first?.multiply(data.rendimento!!))?.setScale(2, BigDecimal.ROUND_UP)} metros")
         builder.appendln()
-        builder.append("Reservado: ${estoquesReservados.second.setScale(2)} ${data.unidadeMedida.orEmpty()} | ")
-        builder.append("${(estoquesReservados.second * data.rendimento!!).setScale(2)} metros")
+        builder.append("Reservado: ${estoquesReservados.second?.setScale(2, BigDecimal.ROUND_UP)} ${data.unidadeMedida.orEmpty()} | ")
+        builder.append("${(estoquesReservados.second?.multiply(data.rendimento!!))?.setScale(2, BigDecimal.ROUND_UP)} metros")
 
         return builder.toString()
     }
