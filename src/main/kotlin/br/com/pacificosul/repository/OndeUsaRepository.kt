@@ -1,12 +1,13 @@
 package br.com.pacificosul.repository
 
 import br.com.pacificosul.data.produto.CodigoProduto
+import br.com.pacificosul.data.produto.OndeUsaData
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.math.BigDecimal
 
 class OndeUsaRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
 
-    fun getOndeUsa(ckAgruparOndeUsa: Boolean, ckOndeUsaAlternativaPadrao: Boolean, codProduto: CodigoProduto): List<Unit> {
+    fun getOndeUsa(ckAgruparOndeUsa: Boolean, ckOndeUsaAlternativaPadrao: Boolean, codProduto: CodigoProduto): List<OndeUsaData> {
         val estoqueGlobal = BigDecimal.ZERO
         val sql = StringBuilder()
         val mapa = HashMap<String, Any>()
@@ -81,10 +82,27 @@ class OndeUsaRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
             sql.append("ORDER BY ANO DESC,INDICE_ESTACAO ")
         }
 
-        println(sql.toString())
-
         return jdbcTemplate.query(sql.toString(), mapa){
-            rs, _ -> println(rs)
+            rs, _ ->
+            val data = OndeUsaData()
+            data.nivelItem = rs.getString("nivel_item")
+            data.grupoItem = rs.getString("grupo_item")
+            data.subItem = rs.getString("sub_item")
+            data.itemItem = rs.getString("item_item")
+            data.nivelComp = rs.getString("nivel_comp")
+            data.grupoComp = rs.getString("grupo_comp")
+            data.subComp = rs.getString("sub_comp")
+            data.itemComp = rs.getString("item_comp")
+            data.unidadeMedida = rs.getString("unidade_medida")
+            data.ano = rs.getString("unidade_medida")
+            data.indiceEstacao = rs.getString("indiceEstacao")
+            data.descrColecao = rs.getString("descr_colecao")
+            data.referencia = rs.getString("referencia")
+            data.alternativaComp = rs.getInt("alternativa_comp")
+            data.alternativaItem = rs.getInt("alternativa_item")
+            data.consumo = rs.getInt("consumo")
+            data.pecasPrevistas = rs.getInt("pecas_previstas")
+            data
         }.orEmpty()
     }
 }

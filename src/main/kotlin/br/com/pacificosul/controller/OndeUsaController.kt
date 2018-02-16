@@ -1,6 +1,7 @@
 package br.com.pacificosul.controller
 
 import br.com.pacificosul.data.produto.CodigoProduto
+import br.com.pacificosul.data.produto.OndeUsaData
 import br.com.pacificosul.repository.OndeUsaRepository
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/ondeUsa")
 class OndeUsaController : DefaultController() {
     @GetMapping("/")
-    fun getOndeUsa() : List<Unit> {
+    fun getOndeUsa() : List<OndeUsaData> {
         val cod = CodigoProduto("1", "11111", "000", "000000")
         return OndeUsaRepository(oracleTemplate).getOndeUsa(true, true, cod)
     }
