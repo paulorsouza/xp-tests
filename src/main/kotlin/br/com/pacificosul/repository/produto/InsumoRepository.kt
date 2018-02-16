@@ -73,12 +73,16 @@ class InsumoRepository: ProdutoRepository {
         builder.append("Depositos: ${estqData.third}")
         builder.appendln()
         val estoquesReservados = getEstoqueReservado(
-                "9", data.grupo.orEmpty(), data.subGrupo.orEmpty(), data.item.orEmpty()
+                data.nivel.orEmpty(), data.grupo.orEmpty(), data.subGrupo.orEmpty(), data.item.orEmpty()
         )
-        builder.appendln()
-        builder.append("A Receber: ${estoquesReservados.first?.setScale(2, BigDecimal.ROUND_UP)} ${data.unidadeMedida.orEmpty()}")
-        builder.appendln()
-        builder.append("Reservado: ${estoquesReservados.second?.setScale(2, BigDecimal.ROUND_UP)} ${data.unidadeMedida.orEmpty()}")
+        if(estoquesReservados.first != null){
+            builder.appendln()
+            builder.append("A Receber: ${estoquesReservados.first?.setScale(2, BigDecimal.ROUND_UP)} ${data.unidadeMedida.orEmpty()} ")
+        }
+        if(estoquesReservados.second != null){
+            builder.appendln()
+            builder.append("Reservado: ${estoquesReservados.second?.setScale(2, BigDecimal.ROUND_UP)} ${data.unidadeMedida.orEmpty()} ")
+        }
         return builder.toString()
     }
 }

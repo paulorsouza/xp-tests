@@ -51,7 +51,7 @@ open class TecidoRepository : ProdutoRepository {
     override fun <T> getText(data: T): String {
         val data = data as TecidoData
         val builder = StringBuilder()
-        builder.append("Descrição: ${data.descrReferencia.orEmpty()}")
+        builder.append("Descrição: ${data.descricao.orEmpty()}")
         if(!data.complemento.isNullOrBlank())
             builder.append("Complemento: ${data.complemento}")
         builder.appendln()
@@ -95,13 +95,16 @@ open class TecidoRepository : ProdutoRepository {
         val estoquesReservados = getEstoqueReservado(
                 data.nivel.orEmpty(), data.grupo.orEmpty(), data.subGrupo.orEmpty(), data.item.orEmpty()
         )
-        builder.appendln()
-        builder.append("A Receber: ${estoquesReservados.first?.setScale(2, BigDecimal.ROUND_UP)} ${data.unidadeMedida.orEmpty()} | ")
-        builder.append("${(estoquesReservados.first?.multiply(data.rendimento!!))?.setScale(2, BigDecimal.ROUND_UP)} metros")
-        builder.appendln()
-        builder.append("Reservado: ${estoquesReservados.second?.setScale(2, BigDecimal.ROUND_UP)} ${data.unidadeMedida.orEmpty()} | ")
-        builder.append("${(estoquesReservados.second?.multiply(data.rendimento!!))?.setScale(2, BigDecimal.ROUND_UP)} metros")
-
+        if(estoquesReservados.first != null){
+            builder.appendln()
+            builder.append("A Receber: ${estoquesReservados.first?.setScale(2, BigDecimal.ROUND_UP)} ${data.unidadeMedida.orEmpty()} | ")
+            builder.append("${(estoquesReservados.first?.multiply(data.rendimento!!))?.setScale(2, BigDecimal.ROUND_UP)} metros")
+        }
+        if(estoquesReservados.second != null){
+            builder.appendln()
+            builder.append("Reservado: ${estoquesReservados.second?.setScale(2, BigDecimal.ROUND_UP)} ${data.unidadeMedida.orEmpty()} | ")
+            builder.append("${(estoquesReservados.second?.multiply(data.rendimento!!))?.setScale(2, BigDecimal.ROUND_UP)} metros")
+        }
         return builder.toString()
     }
 }
