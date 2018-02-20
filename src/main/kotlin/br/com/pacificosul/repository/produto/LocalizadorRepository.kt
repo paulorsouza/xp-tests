@@ -1,10 +1,10 @@
-package br.com.pacificosul.repository
+package br.com.pacificosul.repository.produto
 
-import br.com.pacificosul.data.LocalizadorData
-import br.com.pacificosul.data.LocalizadorResultData
+import br.com.pacificosul.data.produto.LocalizadorData
+import br.com.pacificosul.data.produto.LocalizadorResultData
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 
-class ProdutoRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
+class LocalizadorRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
     fun listProdutos(params: LocalizadorData): List<LocalizadorResultData> {
         val sql = StringBuilder()
         sql.append("SELECT ")
@@ -61,41 +61,42 @@ class ProdutoRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
 
         if(!params.nivel.isNullOrBlank()) {
             sql.append(" and con.NIVEL_ESTRUTURA = :nivel")
-            mapa.put("nivel", params.nivel!!)
+            mapa.put("nivel", params.nivel!!.toUpperCase())
         }
 
         if(!params.grupo.isNullOrBlank()) {
             sql.append(" and con.GRUPO_ESTRUTURA = :grupo")
-            mapa.put("grupo", params.grupo!!)
+            mapa.put("grupo", params.grupo!!.toUpperCase())
         }
 
         if(!params.subGrupo.isNullOrBlank()) {
             sql.append(" and con.SUBGRU_ESTRUTURA = :sub")
-            mapa.put("sub", params.subGrupo!!)
+            mapa.put("sub", params.subGrupo!!.toUpperCase())
         }
 
         if(!params.item.isNullOrBlank()) {
             sql.append(" and con.ITEM_ESTRUTURA = :item")
-            mapa.put("item", params.item!!)
+            mapa.put("item", params.item!!.toUpperCase())
         }
 
         if(!params.complemento.isNullOrBlank()) {
             sql.append(" and con.COMPLEMENTO like :complemento")
-            mapa.put("complemento", "%" + params.complemento!! + "%")
+            mapa.put("complemento", "%" + params.complemento!!.toUpperCase() + "%")
         }
 
         if(!params.descricao.isNullOrBlank()) {
             sql.append(" and  con.descricao like :descricao")
-            mapa.put("descricao", "%" + params.descricao!! + "%")
+            mapa.put("descricao", "%" + params.descricao!!.toUpperCase() + "%")
         }
 
         sql.append(" order by con.QTDE_ESTQ_GLOBAL desc ")
 
         return jdbcTemplate.query(sql.toString(), mapa) {
-            rs, _ -> LocalizadorResultData(rs.getString("nivel_estrutura"),
-                rs.getString("grupo_estrutura"), rs.getString("subgru_estrutura"), rs.getString("item_estrutura"),
-                rs.getString("descricao"), rs.getString("complemento"), rs.getInt("qtde_areceber"),
-                rs.getInt("qtde_reservado"), rs.getInt("qtde_estq_tmrp"), rs.getInt("qtde_estq_global"))
+            rs, _ ->
+            LocalizadorResultData(rs.getString("nivel_estrutura"),
+                    rs.getString("grupo_estrutura"), rs.getString("subgru_estrutura"), rs.getString("item_estrutura"),
+                    rs.getString("descricao"), rs.getString("complemento"), rs.getInt("qtde_areceber"),
+                    rs.getInt("qtde_reservado"), rs.getInt("qtde_estq_tmrp"), rs.getInt("qtde_estq_global"))
         }.orEmpty()
     }
 }

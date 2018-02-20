@@ -1,7 +1,4 @@
-package br.com.pacificosul.data
-
-data class LocalizadorData(val nivel: String?, val grupo: String?, val subGrupo: String?, val item: String?,
-                           val descricao: String?, val complemento: String?)
+package br.com.pacificosul.data.produto
 
 data class LocalizadorResultData(val nivel_estrutura: String?, val grupo_estrutura: String?,
                                  val subgru_estrutura: String?, val item_estrutura: String?,
