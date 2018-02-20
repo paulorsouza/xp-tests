@@ -1,5 +1,6 @@
 package br.com.pacificosul.repository
 
+import br.com.pacificosul.data.LogPrioridadeOpData
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 
 class PrioridadeOpRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
@@ -78,5 +79,23 @@ class PrioridadeOpRepository(private val jdbcTemplate: NamedParameterJdbcTemplat
             end;
         */
         return desmarcados;
+    }
+
+    fun logPrioridade(numeroOp: Int): List<LogPrioridadeOpData> {
+        val sql = "select uti.dat_entrada, usuario_entrada.des_apelido as usuario_entrada, " +
+                "       uti.dat_saida, usuario_saida.des_apelido as usuario_saida " +
+                "from pacificosul.ps_tb_op_uti uti, " +
+                "     pacificosul.ps_tb_usuario usuario_entrada, " +
+                "     pacificosul.ps_tb_usuario usuario_saida " +
+                "where uti.cod_usuario_entrada = usuario_entrada.cod_usuario (+) " +
+                "  and uti.cod_usuario_saida = usuario_saida.cod_usuario (+) " +
+                "  and uti.ordem_producao = :numeroOp " +
+                "order by uti.dat_entrada desc, uti.dat_saida desc"
+        val mapa = HashMap<String, Any>()
+        mapa["numeroOp"] = numeroOp
+        return jdbcTemplate.query(sql, mapa) {
+            rs, _ -> LogPrioridadeOpData(rs.getDate("dat_entrada"), rs.getString("usuario_entrada"),
+                rs.getDate("dat_saida"), rs.getString("usuario_saida"))
+        }.orEmpty()
     }
 }

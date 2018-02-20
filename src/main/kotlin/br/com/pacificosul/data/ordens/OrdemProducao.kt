@@ -3,6 +3,9 @@ package br.com.pacificosul.data.ordens
 import java.math.BigDecimal
 import java.sql.Date
 
+data class OrdemCancelamentoPayload(val observacao: String)
+data class OrdemCancelamentoData(val hasErrors: Boolean = false, val codigoCancelamento: Int = 0, val messages: Set<String> = emptySet())
+data class OrdemProducaoData(val ordemProducao: Int, val OrdemProducaoPrincipal: Int, val cancelamento: OrdemCancelamentoData? = null)
 data class OrdemProducaoItem(val ordemProducao: Int, val tamanho: String,
                              val cor: String, val quantidade: Int, val ordenacaoTamanho: Int)
 data class OndeTemData(val periodoProducao: Int, val periodoAlterado: Int, val ordemProducao: Int,
@@ -15,3 +18,8 @@ data class OndeTemData(val periodoProducao: Int, val periodoAlterado: Int, val o
                        val ordemServico: Int?, val nomeTerceiro: String?, val artigoCotas: Int,
                        val descricaoArtigoCotas: String, val dataEmissao: Date, val dataPrevisao: Date,
                        val dataProrrogacao: Date, val quantidadePendencia: Int, val quantidadeUTI: Int)
+data class OrdemFilhasData(val periodoProducao: Int, val ordemProducao: Int, val grupo: String, val item: String,
+                       val descricaoEstagio: String, val quantidadeProgramado: Int, val quantidadeProduzir: Int,
+                       val quantidadeProduzida: Int, val quantidadeSegunda: Int, val quantidadePerda: Int,
+                       val quantidadeConserto: Int, val quantidadePendente: Int, val ordemServico: Int?,
+                       val nomeTerceiro: String?)

@@ -1,5 +1,6 @@
 package br.com.pacificosul.controller
 
+import br.com.pacificosul.data.LogPrioridadeOpData
 import br.com.pacificosul.repository.PrioridadeOpRepository
 import br.com.pacificosul.rules.getCodigoUsuario
 import br.com.pacificosul.security.TokenClaims
@@ -12,6 +13,9 @@ import org.springframework.web.bind.annotation.*
 @CrossOrigin(origins = arrayOf("http://localhost:3000", "http://192.168.0.193:3000", "http://localhost:8080"))
 @RequestMapping("/api/prioridadeOp")
 class PrioridadeOpController : DefaultController() {
+    @GetMapping("/op/{numeroOp}/log")
+    fun getLogUti(@PathVariable("numeroOp")numeroOp: Int): List<LogPrioridadeOpData> =
+            PrioridadeOpRepository(oracleTemplate).logPrioridade(numeroOp)
 
     @PostMapping("/op/{numeroOp}/grupo/{grupo}/marcar")
     fun marcarUti(authentication: Authentication,
