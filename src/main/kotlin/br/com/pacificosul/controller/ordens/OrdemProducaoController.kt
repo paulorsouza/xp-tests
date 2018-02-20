@@ -1,10 +1,10 @@
 package br.com.pacificosul.controller.ordens
 
 import br.com.pacificosul.controller.DefaultController
-import br.com.pacificosul.data.LocalizadorResultData
 import br.com.pacificosul.data.ordens.OrdemCancelamentoPayload
 import br.com.pacificosul.data.ordens.OrdemFilhasData
 import br.com.pacificosul.data.ordens.OrdemProducaoItem
+import br.com.pacificosul.data.produto.LocalizadorResultData
 import br.com.pacificosul.repository.ordens.OrdemProducaoRepository
 import br.com.pacificosul.rules.cancelarOrdemProducao
 import org.springframework.http.HttpStatus

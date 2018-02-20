@@ -1,10 +1,10 @@
 package br.com.pacificosul.repository.ordens
 
-import br.com.pacificosul.data.LocalizadorResultData
 import br.com.pacificosul.data.ordens.OndeTemData
 import br.com.pacificosul.data.ordens.OrdemFilhasData
 import br.com.pacificosul.data.ordens.OrdemProducaoData
 import br.com.pacificosul.data.ordens.OrdemProducaoItem
+import br.com.pacificosul.data.produto.LocalizadorResultData
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 
 class OrdemProducaoRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
