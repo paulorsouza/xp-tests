@@ -1,7 +1,10 @@
 package br.com.pacificosul.controller
 
+import br.com.pacificosul.data.produto.CodigoProduto
 import br.com.pacificosul.data.produto.LocalizadorData
 import br.com.pacificosul.data.produto.LocalizadorResultData
+import br.com.pacificosul.data.produto.OndeUsaData
+import br.com.pacificosul.repository.OndeUsaRepository
 import br.com.pacificosul.repository.produto.*
 import org.springframework.web.bind.annotation.*
 
@@ -23,6 +26,7 @@ class ProdutoController : DefaultController() {
         return rep.getText(data)
     }
 
+    /* TODO refatorar rotas, ficou legal esse quase patern match, mas inutil */
     @GetMapping("2/{grupo}/{sub}/{item}/texto")
     fun getTecidoAcabadoText(@PathVariable("grupo") grupo: String,
                              @PathVariable("sub") sub: String,
@@ -60,5 +64,13 @@ class ProdutoController : DefaultController() {
         return rep.getText(data)
     }
 
+    @GetMapping("{nivel}/{grupo}/{sub}/{item}/ondeUsa")
+    fun getOndeUsa(@PathVariable("nivel") nivel: String,
+                   @PathVariable("grupo") grupo: String,
+                   @PathVariable("sub") sub: String,
+                   @PathVariable("item") item: String): List<OndeUsaData> {
+        val cod = CodigoProduto(nivel, grupo, sub, item)
+        return OndeUsaRepository(oracleTemplate).getOndeUsa(false, false, cod)
+    }
 
 }

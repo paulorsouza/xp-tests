@@ -17,7 +17,7 @@ object Images {
     }
 
     @Throws(IOException::class)
-    fun resizeImageAsByteArray(widthHeight: Int?, inputStream: InputStream, ext: String): ByteArray {
+    fun resizeImageAsByteArray(widthHeight: Int?, inputStream: FileInputStream, ext: String): ByteArray {
         val imgOriginalImage = ImageIO.read(inputStream)
         val originalHeight = imgOriginalImage.height
         val originalWidht = imgOriginalImage.width

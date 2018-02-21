@@ -95,7 +95,7 @@ class OndeUsaRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
             data.itemComp = rs.getString("item_comp")
             data.unidadeMedida = rs.getString("unidade_medida")
             data.ano = rs.getString("unidade_medida")
-            data.indiceEstacao = rs.getString("indiceEstacao")
+            data.indiceEstacao = rs.getString("indice_estacao")
             data.descrColecao = rs.getString("descr_colecao")
             data.referencia = rs.getString("referencia")
             data.alternativaComp = rs.getInt("alternativa_comp")
