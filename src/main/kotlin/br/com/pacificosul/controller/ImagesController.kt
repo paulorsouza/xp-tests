@@ -16,20 +16,20 @@ class ImagesController {
     val DIR_FOTOS_PRODUTOS = "/mnt/servidor/fotos/"
     val DIR_FOTOS_INSUMOS = "/mnt/servidor/produc/fotos/insumos/"
 
-    @GetMapping("produto")
+    @GetMapping("insumo/{insumo}")
     @ResponseBody
-    fun get(@RequestParam("nivel") nivel: String,
-            @RequestParam("grupo") grupo: String,
-            @RequestParam("subGrupo") subGrupo: String,
-            @RequestParam("item") item: String): Image? {
-        val imagePath = DIR_FOTOS_INSUMOS + nivel + grupo + subGrupo + item
+    fun getInsumo(@PathVariable("insumo") insumo: String): HashMap<String, List<Image>> {
+        val imagePath = (DIR_FOTOS_INSUMOS + insumo + ".jpg").toLowerCase()
         val name = Images.getName(imagePath)
-        return Image(name.orEmpty(), imagePath, "tag", "1")
+        val image =  Image(name.orEmpty(), imagePath, "tag", "1")
+        val paths = arrayListOf<Image>()
+        paths.add(image)
+        return hashMapOf(Pair(insumo, paths))
     }
 
     @GetMapping("produto/referencia/{referencia}")
     @ResponseBody
-    fun get(@PathVariable("referencia") referencia: String): HashMap<String, List<Image>> {
+    fun getProduto(@PathVariable("referencia") referencia: String): HashMap<String, List<Image>> {
         var ref = referencia
         if (referencia.first().isLetter()) {
             ref = referencia.replaceRange(0,1,"2")
@@ -53,7 +53,7 @@ class ImagesController {
 
         return imageBase64.orEmpty()
     }
-    
+
     @GetMapping(value = "/download", produces = arrayOf(MediaType.IMAGE_JPEG_VALUE))
     @ResponseBody
     @Throws(IOException::class)
