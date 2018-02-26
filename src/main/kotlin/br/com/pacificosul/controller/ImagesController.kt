@@ -53,15 +53,7 @@ class ImagesController {
 
         return imageBase64.orEmpty()
     }
-
-//    @GetMapping(value = "/download", produces = arrayOf(MediaType.IMAGE_JPEG_VALUE))
-//    @ResponseBody
-//    @Throws(IOException::class)
-//    fun getImage(@RequestParam("imagePath") imagePath: String): ByteArray {
-//        val file = File(imagePath)
-//        return file.readBytes()
-//    }
-
+    
     @GetMapping(value = "/download", produces = arrayOf(MediaType.IMAGE_JPEG_VALUE))
     @ResponseBody
     @Throws(IOException::class)
