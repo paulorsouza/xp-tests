@@ -54,11 +54,26 @@ class ImagesController {
         return imageBase64.orEmpty()
     }
 
+//    @GetMapping(value = "/download", produces = arrayOf(MediaType.IMAGE_JPEG_VALUE))
+//    @ResponseBody
+//    @Throws(IOException::class)
+//    fun getImage(@RequestParam("imagePath") imagePath: String): ByteArray {
+//        val file = File(imagePath)
+//        return file.readBytes()
+//    }
+
     @GetMapping(value = "/download", produces = arrayOf(MediaType.IMAGE_JPEG_VALUE))
     @ResponseBody
     @Throws(IOException::class)
-    fun getImage(@RequestParam("imagePath") imagePath: String): ByteArray {
+    fun donwload(@RequestParam("imagePath") imagePath: String,
+                 @RequestParam("height", required = false) height: Int?): ByteArray {
         val file = File(imagePath)
-        return file.readBytes()
+        var bytes: ByteArray
+        if (height != null) {
+            bytes = Images.resizeImageAsByteArray(height, FileInputStream(file), "jpg")
+        } else {
+            bytes = file.readBytes()
+        }
+        return bytes
     }
 }
