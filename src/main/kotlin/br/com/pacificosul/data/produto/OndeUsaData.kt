@@ -21,5 +21,4 @@ class OndeUsaData {
     var alternativaComp: Int? = null
     var consumo: Int? = null
     var pecasPrevistas: Int? = null
-
 }
