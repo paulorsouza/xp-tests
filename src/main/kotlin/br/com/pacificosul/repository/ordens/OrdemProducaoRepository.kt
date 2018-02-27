@@ -331,17 +331,4 @@ class OrdemProducaoRepository(private val jdbcTemplate: NamedParameterJdbcTempla
 
         return jdbcTemplate.update(sql, mapa)
     }
-
-    fun getFoo(): List<LocalizadorResultData> {
-        val sql = "select estq_300_estq_310.nivel_estrutura, estq_300_estq_310.grupo_estrutura, " +
-                "       estq_300_estq_310.subgrupo_estrutura, estq_300_estq_310.item_estrutura, " +
-                "       estq_300_estq_310.numero_documento, estq_300_estq_310.sequencia_insercao " +
-                "from estq_300_estq_310"
-        return jdbcTemplate.query(sql) {
-            rs, _ -> LocalizadorResultData(rs.getString("nivel_estrutura"), rs.getString("grupo_estrutura"),
-                rs.getString("subgrupo_estrutura"), rs.getString("item_estrutura"),
-                qtde_areceber = rs.getInt("numero_documento"), qtde_reservado = rs.getInt("sequencia_insercao"),
-                complemento = null, descricao = null, qtde_estq_global = null, qtde_estq_tmrp = null)
-        }.orEmpty()
-    }
 }

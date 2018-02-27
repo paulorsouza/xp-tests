@@ -32,6 +32,4 @@ class OrdemProducaoController: DefaultController() {
         val r = cancelarOrdemProducao(oracleTemplate, ordemProducao, payload.observacao)
         return ResponseEntity(r, if (r.hasErrors) HttpStatus.UNPROCESSABLE_ENTITY else HttpStatus.OK)
     }
-    @GetMapping("/foo")
-    fun foo(): List<LocalizadorResultData> = OrdemProducaoRepository(oracleTemplate).getFoo()
 }
