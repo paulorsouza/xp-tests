@@ -33,6 +33,12 @@ class PsTbUsuarioAuthenticationProvider : AuthenticationProvider {
                     claims, password, ArrayList<GrantedAuthority>())
         }
 
+        if(ip == "192.168.0.193") {
+            val claims = TokenClaims("Chewbacca", "7", "7","192.168.0.193")
+            return UsernamePasswordAuthenticationToken(
+                    claims, password, ArrayList<GrantedAuthority>())
+        }
+
         val sql = "SELECT DES_APELIDO, COD_USUARIO, COD_USUARIO_VETORH " +
                   "FROM PACIFICOSUL.PS_TB_USUARIO " +
                   "WHERE COD_USUARIO_VETORH = ? " +

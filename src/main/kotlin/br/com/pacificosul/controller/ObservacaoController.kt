@@ -47,8 +47,9 @@ class ObservacaoController : DefaultController() {
                       @RequestBody payload: Payload): ObservacaoData {
         val codUsuario = getCodigoUsuario(authentication)
         val nome = UserRepository(oracleTemplate).getNomeUsuario(codUsuario)
-        ObservacaoRepository(oracleTemplate).addObservacao(nome.orEmpty(),
+        val rowAffected = ObservacaoRepository(oracleTemplate).addObservacao(nome.orEmpty(),
                 numeroOp, payload.observacao.orEmpty(), payload.descEstagio.orEmpty())
+        System.out.println(rowAffected)
         return ObservacaoData(numeroOp, nome, payload.observacao.orEmpty(), 1,
                 payload.descEstagio.orEmpty(), Date.from(Instant.now()))
     }

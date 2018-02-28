@@ -20,7 +20,7 @@ class ObservacaoRepository(private val jdbcTemplate: NamedParameterJdbcTemplate)
        }.orEmpty()
    }
 
-    fun addObservacao(nome: String, ordem: Int, observacao: String, descEstagio: String) {
+    fun addObservacao(nome: String, ordem: Int, observacao: String, descEstagio: String): Int {
 //        val estagio = "($estagio)$desEstagio"
         val insert = "insert into PACIFICOSUL.PS_TB_OBS_200 " +
                 "(ordem_producao, usuario, observacao, estagio, data_observacao) " +
@@ -30,7 +30,7 @@ class ObservacaoRepository(private val jdbcTemplate: NamedParameterJdbcTemplate)
         mapa["usuario"] = nome
         mapa["observacao"] = observacao
         mapa["descricaoEstagio"] = descEstagio
-        jdbcTemplate.update(insert, mapa)
+        return jdbcTemplate.update(insert, mapa)
     }
 
 

@@ -30,10 +30,9 @@ class ImagesController {
     @GetMapping("produto/referencia/{referencia}")
     @ResponseBody
     fun getProduto(@PathVariable("referencia") referencia: String): HashMap<String, List<Image>> {
-        var ref = referencia
-        if (referencia.first().isLetter()) {
-            ref = referencia.replaceRange(0,1,"2")
-        }
+        val ref = if (referencia.first().isLetter()) {
+            referencia.replaceRange(0,1,"2")
+        } else referencia
         return Images.getImages(DIR_FOTOS_PRODUTOS, ref)
     }
 
@@ -41,16 +40,8 @@ class ImagesController {
     @ResponseBody
     fun get(@RequestParam("imagePath") imagePath: String,
             @RequestParam( "height", required = false) height: Int?): String {
-        val file = File(imagePath)
-        var bytes: ByteArray
-        if (height != null) {
-            bytes = Images.resizeImageAsByteArray(height, FileInputStream(file), "jpg")
-        } else {
-            bytes = file.readBytes()
-        }
-
+        val bytes: ByteArray = reSize(imagePath, height)
         val imageBase64 = Images.toBase64(bytes)
-
         return imageBase64.orEmpty()
     }
 
@@ -58,14 +49,14 @@ class ImagesController {
     @ResponseBody
     @Throws(IOException::class)
     fun donwload(@RequestParam("imagePath") imagePath: String,
-                 @RequestParam("height", required = false) height: Int?): ByteArray {
+                 @RequestParam("height", required = false) height: Int?): ByteArray =
+        reSize(imagePath, height)
+
+    private fun reSize(imagePath: String, height: Int?): ByteArray {
         val file = File(imagePath)
-        var bytes: ByteArray
-        if (height != null) {
-            bytes = Images.resizeImageAsByteArray(height, FileInputStream(file), "jpg")
-        } else {
-            bytes = file.readBytes()
-        }
-        return bytes
+        if (height != null)
+            return Images.resizeImageAsByteArray(height, FileInputStream(file), "jpg")
+
+        return file.readBytes()
     }
 }
