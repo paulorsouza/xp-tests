@@ -30,4 +30,4 @@ BEGIN
         into next_value from dual;
         :new.id := next_value;
     end if;
-END pacificosul.conf_tr_grid_column;
+END conf_tr_grid_column;
