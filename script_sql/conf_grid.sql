@@ -1,6 +1,6 @@
 create table pacificosul.conf_grid(
-    id number(9) not null,
-    nome varchar2(50)
+    id number(9),
+    nome varchar2(50) not null
 )
 
 COMMENT ON TABLE pacificosul.conf_grid IS 'Cadastro de grid';
