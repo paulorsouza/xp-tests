@@ -1,9 +1,9 @@
 create table pacificosul.conf_grid_column(
-    id number(9) not null,
-    id_grid(9) not null
+    id number(9),
+    id_grid number(9),
     name_key varchar2(50) not null,
-    type varchar2(50),
-    formatter number(3)
+    type varchar2(50) not null,
+    formatter number(3) default 0
 )
 
 COMMENT ON TABLE pacificosul.conf_grid_column IS 'Cadastro de colunas das grids do orion web';
@@ -14,6 +14,7 @@ COMMENT ON COLUMN pacificosul.conf_grid_column.formatter IS 'Tipo de formataçã
 ALTER TABLE pacificosul.conf_grid_column ADD CONSTRAINT pk_conf_grid_column PRIMARY KEY (id);
 ALTER TABLE pacificosul.conf_grid_column
     ADD CONSTRAINT REF_CONF_GRID_CONF_GRID_COLUMN FOREIGN KEY(ID_GRID) REFERENCES PACIFICOSUL.CONF_GRID(ID);
+ALTER TABLE pacificosul.conf_grid_column ADD CONSTRAINT UNIQ_CONF_GRID_COLUMN UNIQUE(id_grid, name_key);
 
 CREATE SEQUENCE pacificosul.id_conf_grid_column START WITH 1 INCREMENT BY 1;
 
