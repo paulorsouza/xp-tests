@@ -1,24 +1,42 @@
 package br.com.pacificosul.repository
 
+import br.com.pacificosul.data.GridColumnsDefData
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 
 class GridProfileRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
-    fun getCurrentProfile(gridName: String, codUser: Int) {
-        val sql = "select "
+    fun getCurrentProfile(gridName: String, codUser: Int): Int? {
+        val sql = "select nvl((select id_grid_perfil from pacificosul.conf_grid_perfil_usuario a " +
+                  "            left join pacificosul.conf_grid b on a.id_grid = b.id and b.nome = :gridName " +
+                  "            where a.id_usuario = :codUser), " +
+                  "           (select a.id from pacificosul.conf_grid_perfil a " +
+                  "            left join pacificosul.conf_grid b on a.id_grid = b.id and b.nome = :gridName " +
+                  "            and a.nome = 'default')) as id_perfil from dual"
+        val mapa = HashMap<String, Any>()
+        mapa["gridName"] = gridName
+        mapa["codUser"] = codUser
+
+        return jdbcTemplate.query(sql, mapa) {
+            rs, _ -> rs.getInt("id_grid_perfil")
+        }.firstOrNull()
+    }
+
+    fun getColumnsDef(idPerfil: Int): List<GridColumnsDefData>? {
+        val sql = "select a.id, key, name, type, formatter, summary, " +
+                  "       fixed, resizable, sortable, hidden, position " +
+                  "from pacificosul.CONF_GRID_PERFIL_COLUMN a " +
+                  "join pacificosul.CONF_GRID_COLUMN b on b.id = a.id_grid_column " +
+                  "where a.id_grid_perfil = :idPerfil "
+        val mapa = HashMap<String, Any>()
+        mapa["idPerfil"] = idPerfil
+
+        return jdbcTemplate.query(sql, mapa) {
+            rs, _ -> GridColumnsDefData(rs.getInt("id"), rs.getString("key"),
+                rs.getString("name"), rs.getInt("position"), rs.getString("type"),
+                rs.getInt("formatter"), (rs.getInt("hidden") == 1),
+                (rs.getInt("sortable") == 1), (rs.getInt("filterable") == 1),
+                (rs.getInt("resizable") == 1), (rs.getInt("fixed") == 1),
+                rs.getInt("summary")
+            )
+        }
     }
 }
-
-//fun listAll(ordemProducao: Int): List<ObservacaoData> {
-//    val sql = "select * from pacificosul.ps_tb_obs_200 " +
-//            "where ordem_producao = :ordemProducao " +
-//            "order by data_observacao desc"
-//
-//    val mapa = HashMap<String, Any>()
-//    mapa["ordemProducao"] = ordemProducao
-//
-//    return jdbcTemplate.query(sql, mapa) {
-//        rs, _ -> ObservacaoData(
-//            ordemProducao, rs.getString("usuario"), rs.getString("observacao"),
-//            rs.getInt("sequencia"), rs.getString("estagio"), rs.getDate("data_observacao"))
-//    }.orEmpty()
-//}
