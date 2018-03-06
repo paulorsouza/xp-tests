@@ -43,4 +43,26 @@ class GridProfileRepository(private val jdbcTemplate: NamedParameterJdbcTemplate
             )
         }
     }
+
+    fun updateColumnsDef(data: GridColumnsDefData) {
+        val update = "update pacificosul.CONF_GRID_PERFIL_COLUMN " +
+                "set summary_index = :summary_index, " +
+                "    locked = :locked, " +
+                "    resizable = :resizable, " +
+                "    sortable = :sortable, " +
+                "    hidden = :hidden, " +
+                "    position = :position " +
+                "where id = :id "
+
+        val mapa = HashMap<String, Any>()
+        mapa["summary_index"] = data.summary_index
+        mapa["locked"] = data.locked
+        mapa["resizable"] = data.resizable
+        mapa["sortable"] = data.sortable
+        mapa["hidden"] = data.hidden
+        mapa["position"] = data.position
+        mapa["id"] = data.id
+
+        jdbcTemplate.update(update, mapa)
+    }
 }
