@@ -8,7 +8,7 @@ create table pacificosul.conf_grid_perfil_column(
     filterable number(1) default 1,
     resizable number(1) default 1,
     locked number(1) default 0,
-    summary number(3) default 0,
+    summary_index number(3) default 0,
     width number(6)
 )
 
@@ -19,7 +19,7 @@ COMMENT ON COLUMN pacificosul.conf_grid_perfil_column.sortable IS 'Permite order
 COMMENT ON COLUMN pacificosul.conf_grid_perfil_column.filterable IS 'Permite filtrar por essa coluna: (0) não, (1) sim';
 COMMENT ON COLUMN pacificosul.conf_grid_perfil_column.resizable IS 'Permite redimensionar coluna: (0) não, (1) sim';
 COMMENT ON COLUMN pacificosul.conf_grid_perfil_column.locked IS 'Coluna fixa no grid: (0) não, (1) sim';
-COMMENT ON COLUMN pacificosul.conf_grid_perfil_column.summary IS 'Tipo de totalizador da coluna (Component React): (0) Nenhum, (1) SummaryCount, (2) SummaryDistinctCount, (3) SummaryAverage, (4) SummarySum';
+COMMENT ON COLUMN pacificosul.conf_grid_perfil_column.summary_index IS 'Tipo de totalizador da coluna (Component React): (0) Nenhum, (1) SummaryCount, (2) SummaryDistinctCount, (3) SummaryAverage, (4) SummarySum';
 COMMENT ON COLUMN pacificosul.conf_grid_perfil_column.width IS 'Largura da coluna em pixels';
 
 ALTER TABLE pacificosul.conf_grid_perfil_column ADD CONSTRAINT pk_conf_grid_perfil_column PRIMARY KEY (id);

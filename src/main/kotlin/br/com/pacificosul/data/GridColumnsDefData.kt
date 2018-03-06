@@ -6,11 +6,11 @@ data class GridColumnsDefData (
     val name: String,
     val position: Int,
     val type: String,
-    val formatter: Int?,
+    val formatter_index: Int?,
     val hidden: Boolean,
     val sortable: Boolean,
     val filterable: Boolean,
     val resizable: Boolean,
     val locked: Boolean,
-    val summary: Int
+    val summary_index: Int
 ){}

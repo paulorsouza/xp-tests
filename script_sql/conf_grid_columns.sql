@@ -4,14 +4,14 @@ create table pacificosul.conf_grid_column(
     key varchar2(50) not null,
     name varchar2(50) not null,
     type varchar2(50) not null,
-    formatter number(3) default 0,
+    formatter_index number(3) default 0,
 )
 
 COMMENT ON TABLE pacificosul.conf_grid_column IS 'Cadastro de colunas das grids do orion web, nomes dos campos de configuração estão em ingles para ficar coerente com o frontend';
 COMMENT ON COLUMN pacificosul.conf_grid_column.key IS 'Chave da coluna para linkar o response do backend com a coluna no frontend';
 COMMENT ON COLUMN pacificosul.conf_grid_column.name IS 'Descrição da coluna';
 COMMENT ON COLUMN pacificosul.conf_grid_column.type IS 'Tipo de dados para o frontend: text, number, date';
-COMMENT ON COLUMN pacificosul.conf_grid_column.formatter IS 'Tipo de formatação da coluna no frontend: 0 - Sem formatação, 1 - IntegerFormat';
+COMMENT ON COLUMN pacificosul.conf_grid_column.formatter_index IS 'Tipo de formatação da coluna no frontend: 0 - Sem formatação, 1 - IntegerFormat';
 
 ALTER TABLE pacificosul.conf_grid_column ADD CONSTRAINT pk_conf_grid_column PRIMARY KEY (id);
 ALTER TABLE pacificosul.conf_grid_column

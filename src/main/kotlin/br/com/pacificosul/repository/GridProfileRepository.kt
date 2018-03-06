@@ -25,7 +25,7 @@ class GridProfileRepository(private val jdbcTemplate: NamedParameterJdbcTemplate
     }
 
     fun getColumnsDef(idPerfil: Int): List<GridColumnsDefData>? {
-        val sql = "select a.id, key, name, type, formatter, summary, filterable, " +
+        val sql = "select a.id, key, name, type, formatter_index, summary_index, filterable, " +
                   "       locked, resizable, sortable, hidden, position " +
                   "from pacificosul.CONF_GRID_PERFIL_COLUMN a " +
                   "join pacificosul.CONF_GRID_COLUMN b on b.id = a.id_grid_column " +
@@ -36,10 +36,10 @@ class GridProfileRepository(private val jdbcTemplate: NamedParameterJdbcTemplate
         return jdbcTemplate.query(sql, mapa) {
             rs, _ -> GridColumnsDefData(rs.getInt("id"), rs.getString("key"),
                 rs.getString("name"), rs.getInt("position"), rs.getString("type"),
-                rs.getInt("formatter"), (rs.getInt("hidden") == 1),
+                rs.getInt("formatter_index"), (rs.getInt("hidden") == 1),
                 (rs.getInt("sortable") == 1), (rs.getInt("filterable") == 1),
                 (rs.getInt("resizable") == 1), (rs.getInt("locked") == 1),
-                rs.getInt("summary")
+                rs.getInt("summary_index")
             )
         }
     }
