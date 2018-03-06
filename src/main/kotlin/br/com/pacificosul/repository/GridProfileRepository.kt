@@ -29,7 +29,8 @@ class GridProfileRepository(private val jdbcTemplate: NamedParameterJdbcTemplate
                   "       locked, resizable, sortable, hidden, position " +
                   "from pacificosul.CONF_GRID_PERFIL_COLUMN a " +
                   "join pacificosul.CONF_GRID_COLUMN b on b.id = a.id_grid_column " +
-                  "where a.id_grid_perfil = :idPerfil "
+                  "where a.id_grid_perfil = :idPerfil " +
+                  "order by position "
         val mapa = HashMap<String, Any>()
         mapa["idPerfil"] = idPerfil
 
