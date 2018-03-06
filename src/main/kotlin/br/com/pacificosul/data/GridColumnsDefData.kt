@@ -11,6 +11,6 @@ data class GridColumnsDefData (
     val sortable: Boolean,
     val filterable: Boolean,
     val resizable: Boolean,
-    val fixed: Boolean,
+    val locked: Boolean,
     val summary: Int
 ){}
