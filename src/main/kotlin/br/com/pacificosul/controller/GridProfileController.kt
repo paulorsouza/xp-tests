@@ -1,15 +1,10 @@
 package br.com.pacificosul.controller
 
 import br.com.pacificosul.data.GridColumnsDefData
-import br.com.pacificosul.data.ObservacaoData
 import br.com.pacificosul.repository.GridProfileRepository
-import br.com.pacificosul.repository.ObservacaoRepository
-import br.com.pacificosul.repository.UserRepository
 import br.com.pacificosul.rules.getCodigoUsuario
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
-import java.sql.Date
-import java.time.Instant
 
 @RestController
 @CrossOrigin(origins = arrayOf("http://localhost:3000", "http://192.168.0.193:3000", "http://localhost:8080"))
@@ -39,5 +34,12 @@ class GridProfileController: DefaultController() {
     fun addObservacao(authentication: Authentication,
                       @RequestBody payload: List<GridColumnsDefData>) {
         payload.forEach { x -> GridProfileRepository(oracleTemplate).updateColumnsDef(x) }
+    }
+
+    @GetMapping("{gridName}/get-profiles")
+    fun getProfiles(authentication: Authentication,
+                    @PathVariable gridName: String): List<Pair<Int, String>>{
+        val codUsuario = getCodigoUsuario(authentication)
+        return GridProfileRepository(oracleTemplate).getProfiles(gridName, codUsuario)
     }
 }

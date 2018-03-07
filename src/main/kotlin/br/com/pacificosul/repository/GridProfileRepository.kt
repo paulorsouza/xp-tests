@@ -26,7 +26,7 @@ class GridProfileRepository(private val jdbcTemplate: NamedParameterJdbcTemplate
 
     fun getColumnsDef(idPerfil: Int): List<GridColumnsDefData>? {
         val sql = "select a.id, key, name, type, formatter_index, summary_index, filterable, " +
-                  "       locked, resizable, sortable, hidden, position " +
+                  "       locked, resizable, sortable, hidden, position, id_grid_perfil " +
                   "from pacificosul.CONF_GRID_PERFIL_COLUMN a " +
                   "join pacificosul.CONF_GRID_COLUMN b on b.id = a.id_grid_column " +
                   "where a.id_grid_perfil = :idPerfil " +
@@ -35,7 +35,8 @@ class GridProfileRepository(private val jdbcTemplate: NamedParameterJdbcTemplate
         mapa["idPerfil"] = idPerfil
 
         return jdbcTemplate.query(sql, mapa) {
-            rs, _ -> GridColumnsDefData(rs.getInt("id"), rs.getString("key"),
+            rs, _ -> GridColumnsDefData(rs.getInt("id"),
+                rs.getInt("id_grid_perfil"), rs.getString("key"),
                 rs.getString("name"), rs.getInt("position"), rs.getString("type"),
                 rs.getInt("formatter_index"), (rs.getInt("hidden") == 1),
                 (rs.getInt("sortable") == 1), (rs.getInt("filterable") == 1),
@@ -65,5 +66,22 @@ class GridProfileRepository(private val jdbcTemplate: NamedParameterJdbcTemplate
         mapa["id"] = data.id
 
         jdbcTemplate.update(update, mapa)
+    }
+
+    fun getProfiles(gridName: String, codUsuario: Int): List<Pair<Int, String>> {
+        val sql = "select id, nome from pacificosul.CONF_GRID_PERFIL a " +
+            "join pacificosul.conf_grid b " +
+            "  on b.id = a.id_grid " +
+            " and b.nome = :gridName " +
+            "where id_usuario_gerenciador = :codUsuario " +
+            "   or publico = 1 "
+
+        val mapa = HashMap<String, Any>()
+        mapa["gridName"] = gridName
+        mapa["codUsuario"] = codUsuario
+
+        return jdbcTemplate.query(sql, mapa) {
+            rs, _ -> Pair(rs.getInt("id"), rs.getString("codUsuario"))
+        }
     }
 }

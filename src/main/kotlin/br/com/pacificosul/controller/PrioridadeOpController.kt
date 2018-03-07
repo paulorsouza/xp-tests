@@ -3,7 +3,6 @@ package br.com.pacificosul.controller
 import br.com.pacificosul.data.LogPrioridadeOpData
 import br.com.pacificosul.repository.PrioridadeOpRepository
 import br.com.pacificosul.rules.getCodigoUsuario
-import br.com.pacificosul.security.TokenClaims
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication

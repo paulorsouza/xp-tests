@@ -1,10 +1,8 @@
 package br.com.pacificosul.controller.planejamento
 
 import br.com.pacificosul.controller.DefaultController
-import br.com.pacificosul.data.estoque.EstoqueDeposito
 import br.com.pacificosul.data.planejamento.RolosOrdemData
 import br.com.pacificosul.model.Referencia
-import br.com.pacificosul.repository.estoque.EstoqueRepository
 import br.com.pacificosul.repository.planejamento.PlanejamentoRepository
 import org.springframework.web.bind.annotation.*
 

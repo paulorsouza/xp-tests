@@ -2,6 +2,7 @@ package br.com.pacificosul.data
 
 data class GridColumnsDefData (
     val id: Int,
+    val id_grid_perfil: Int,
     val key: String,
     val name: String,
     val position: Int,
