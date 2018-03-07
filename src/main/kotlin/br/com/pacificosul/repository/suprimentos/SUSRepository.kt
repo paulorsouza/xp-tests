@@ -61,9 +61,6 @@ class SUSRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
             stringBuilder.append("and nom_fornecedor like :fornecedor")
             mapa["fornecedor"] = "%"+nomeFornecedor.orEmpty().toUpperCase()+"%"
         }
-        System.out.println(stringBuilder.toString())
-        System.out.println(mapa.keys)
-        System.out.println(mapa.values)
         return jdbcTemplate.query(stringBuilder.toString(), mapa) {
             rs, _ -> SUSData(rs.getInt("cod_solicitacao"), rs.getString("des_situacao"),
                 rs.getString("des_usuario"), rs.getDate("dat_corte"), rs.getDate("dat_abertura"),
