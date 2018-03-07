@@ -1,6 +1,7 @@
 package br.com.pacificosul.repository
 
 import br.com.pacificosul.data.GridColumnsDefData
+import br.com.pacificosul.data.GridProfileData
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 
 class GridProfileRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
@@ -68,8 +69,8 @@ class GridProfileRepository(private val jdbcTemplate: NamedParameterJdbcTemplate
         jdbcTemplate.update(update, mapa)
     }
 
-    fun getProfiles(gridName: String, codUsuario: Int): List<Pair<Int, String>> {
-        val sql = "select id, nome from pacificosul.CONF_GRID_PERFIL a " +
+    fun getProfiles(gridName: String, codUsuario: Int): List<GridProfileData> {
+        val sql = "select a.id, a.nome from pacificosul.CONF_GRID_PERFIL a " +
             "join pacificosul.conf_grid b " +
             "  on b.id = a.id_grid " +
             " and b.nome = :gridName " +
@@ -81,7 +82,7 @@ class GridProfileRepository(private val jdbcTemplate: NamedParameterJdbcTemplate
         mapa["codUsuario"] = codUsuario
 
         return jdbcTemplate.query(sql, mapa) {
-            rs, _ -> Pair(rs.getInt("id"), rs.getString("codUsuario"))
+            rs, _ -> GridProfileData(rs.getInt("id"), rs.getString("nome"))
         }
     }
 }

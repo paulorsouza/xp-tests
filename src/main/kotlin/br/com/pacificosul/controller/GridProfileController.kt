@@ -1,6 +1,7 @@
 package br.com.pacificosul.controller
 
 import br.com.pacificosul.data.GridColumnsDefData
+import br.com.pacificosul.data.GridProfileData
 import br.com.pacificosul.repository.GridProfileRepository
 import br.com.pacificosul.rules.getCodigoUsuario
 import org.springframework.security.core.Authentication
@@ -38,7 +39,7 @@ class GridProfileController: DefaultController() {
 
     @GetMapping("{gridName}/get-profiles")
     fun getProfiles(authentication: Authentication,
-                    @PathVariable gridName: String): List<Pair<Int, String>>{
+                    @PathVariable gridName: String): List<GridProfileData>{
         val codUsuario = getCodigoUsuario(authentication)
         return GridProfileRepository(oracleTemplate).getProfiles(gridName, codUsuario)
     }
