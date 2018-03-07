@@ -1,13 +1,23 @@
 package br.com.pacificosul.repository.ordens
 
-import br.com.pacificosul.data.ordens.OndeTemData
-import br.com.pacificosul.data.ordens.OrdemFilhasData
-import br.com.pacificosul.data.ordens.OrdemProducaoData
-import br.com.pacificosul.data.ordens.OrdemProducaoItem
+import br.com.pacificosul.data.ordens.*
 import br.com.pacificosul.data.produto.LocalizadorResultData
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 
 class OrdemProducaoRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
+    fun getOrdemInfo(ordemProducao: Int): OrdemProducaoData {
+        val sql = "select pcpc_020.ordem_producao, pcpc_020.periodo_producao, pcpc_020.referencia_peca " +
+                "from pcpc_020 " +
+                "where pcpc_020.ordem_producao = :ordemProducao"
+        val mapa = HashMap<String, Any>()
+        mapa["ordemProducao"] = ordemProducao
+        return jdbcTemplate.query(sql, mapa) {
+            rs, _ -> OrdemProducaoData(rs.getInt("ordem_producao"), periodoProducao = rs.getInt("periodo_producao"),
+                referencia = rs.getString("referencia_peca"))
+        }.first()
+    }
+
     fun getOrdemItens(ordemProducao: Int): List<OrdemProducaoItem> {
         val sql = "select pcpc_021.ordem_producao, pcpc_021.tamanho, pcpc_021.sortimento, " +
                 "pcpc_021.sequencia_tamanho, pcpc_021.quantidade from pcpc_021 " +
@@ -330,5 +340,70 @@ class OrdemProducaoRepository(private val jdbcTemplate: NamedParameterJdbcTempla
         mapa["observacao"] = observacao
 
         return jdbcTemplate.update(sql, mapa)
+    }
+    
+    fun consultaAvance(specificTemplate: JdbcTemplate, ordemProducao: Int): List<OrdemAvance> {
+        val sql = "select con.*, (select max(z.usuario) from hdoc_030 z where z.CODIGO_USUARIO = con.usuario) as nome from ( " +
+                "select  " +
+                "cast(sequencia_estagio as number(11)) as sequencia_estagio, " +
+                "codigo_estagio, " +
+                "descricao_estagio, " +
+                "sum(qtde_programada) as qtde_programada, " +
+                "sum(qtde_produzir) as qtde_produzir, " +
+                "sum(qtde_produzida) as qtde_produzida, " +
+                "sum(qtde_segunda) as qtde_segunda, " +
+                "sum(qtde_perda) as qtde_perda, " +
+                "sum(qtde_conserto) as qtde_conserto, " +
+                "sum(qtde_produzir - qtde_produzida - qtde_segunda - qtde_perda) as qtde_pendente, " +
+                "max(data_apontamento) as data_apontamento, " +
+                "max(data_anterior) as data_anterior, " +
+                "max(hora_anterior) as hora_anterior, " +
+                "nvl((select to_char(max(a.HORA_PRODUCAO), 'hh24:mi:ss') from pcpc_045 a where a.ORDEM_PRODUCAO = " + ordemProducao +
+                "               and a.PCPC040_ESTCONF = codigo_estagio " +
+                "               and a.DATA_PRODUCAO = (select max(pcpc_045.DATA_PRODUCAO) from pcpc_045 " +
+                "                                      where pcpc_045.ORDEM_PRODUCAO = a.ORDEM_PRODUCAO " +
+                "                                      and pcpc_045.PCPC040_ESTCONF = codigo_estagio)), '') as hora_apontamento, " +
+                " (select max(a.CODIGO_USUARIO) from pcpc_045 a where a.ORDEM_PRODUCAO = " + ordemProducao +
+                "           and a.PCPC040_ESTCONF = codigo_estagio " +
+                "           and a.DATA_PRODUCAO = (select max(pcpc_045.DATA_PRODUCAO) from pcpc_045 " +
+                "                                  where pcpc_045.ORDEM_PRODUCAO = a.ORDEM_PRODUCAO " +
+                "                                  and pcpc_045.PCPC040_ESTCONF = codigo_estagio) " +
+                "           and to_char(a.HORA_PRODUCAO, 'hh24:mi:ss') = (select to_char(max(a.HORA_PRODUCAO), 'hh24:mi:ss') from pcpc_045 a where a.ORDEM_PRODUCAO = " + ordemProducao +
+                "           and a.PCPC040_ESTCONF = codigo_estagio " +
+                "           and a.DATA_PRODUCAO = (select max(pcpc_045.DATA_PRODUCAO) from pcpc_045 " +
+                "                                  where pcpc_045.ORDEM_PRODUCAO = a.ORDEM_PRODUCAO " +
+                "                                  and pcpc_045.PCPC040_ESTCONF = codigo_estagio)) " +
+                "                                  ) as usuario " +
+                "from " +
+                "( " +
+                "    select " +
+                "    pend.*, " +
+                "    nvl(decode(pend.CODIGO_ESTAGIO, 15, to_char(pend.DATA_PROGRAMACAO, 'hh24:mi:ss'), (select to_char(max(a.HORA_PRODUCAO), 'hh24:mi:ss') from pcpc_045 a where a.ORDEM_PRODUCAO = pend.ORDEM_PRODUCAO " +
+                "               and a.PCPC040_ESTCONF = pend.CODIGO_ESTAGIO " +
+                "               and a.DATA_PRODUCAO = (select PS_FN_GET_DATA_ENTRA_EST_OP(pend.ORDEM_PRODUCAO, codigo_estagio) from dual))), '') as hora_anterior, " +
+                "    nvl(( " +
+                "             select max(nvl(pcpc_045.DATA_PRODUCAO, to_date('19800101', 'yyyymmdd'))) from pcpc_045 " +
+                "             where pcpc_045.ORDEM_PRODUCAO = pend.ORDEM_PRODUCAO " +
+                "                   and pcpc_045.PCPC040_ESTCONF = pend.CODIGO_ESTAGIO " +
+                "    ), to_date('19800101', 'yyyymmdd')) as data_apontamento, " +
+                "    nvl(decode(pend.CODIGO_ESTAGIO, 15, pend.DATA_PROGRAMACAO, ( " +
+                "             select PS_FN_GET_DATA_ENTRA_EST_OP(pend.ORDEM_PRODUCAO, pend.CODIGO_ESTAGIO) from dual " +
+                "    )), to_date('19800101', 'yyyymmdd')) as data_anterior " +
+                "    from pacificosul.ps_vw_avance pend " +
+                "    where (pend.ORDEM_PRODUCAO =  " + ordemProducao +
+                " )) " +
+                "group by codigo_estagio, " +
+                "         descricao_estagio, " +
+                "         sequencia_estagio " +
+                ") con " +
+                "order by con.sequencia_estagio, " +
+                "         con.codigo_estagio"
+
+        return specificTemplate.query(sql) {
+            rs, _ -> OrdemAvance(rs.getInt("sequencia_estagio"), rs.getInt("codigo_estagio"), rs.getString("descricao_estagio"),
+                rs.getInt("qtde_programada"), rs.getInt("qtde_produzir"), rs.getInt("qtde_produzida"), rs.getInt("qtde_segunda"),
+                rs.getInt("qtde_perda"), rs.getInt("qtde_conserto"), rs.getInt("qtde_pendente"), 0, rs.getDate("data_apontamento"),
+                rs.getDate("data_anterior"), rs.getString("hora_anterior"), rs.getString("hora_apontamento"), rs.getString("nome"))
+        }.orEmpty()
     }
 }

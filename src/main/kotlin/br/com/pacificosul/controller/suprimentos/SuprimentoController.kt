@@ -17,13 +17,6 @@ class SuprimentoController : DefaultController() {
                            @RequestParam(name= "nomeFornecedor", required = false)nomeFornecedor: String?,
                            @RequestParam(name= "ordemProducao", required = false)ordemProducao: Int?,
                            @RequestParam(name= "situacoes", required = false)situacoes: List<Int>?): List<SUSData> {
-        System.out.println(nivel);
-        System.out.println(grupo);
-        System.out.println(subgrupo);
-        System.out.println(item);
-        System.out.println(nomeFornecedor);
-        System.out.println(ordemProducao);
-        System.out.println(situacoes);
         return SUSRepository(oracleTemplate).solicitacaoUrgente(
                 nivel.orEmpty().toUpperCase(),
                 grupo.orEmpty().toUpperCase(),

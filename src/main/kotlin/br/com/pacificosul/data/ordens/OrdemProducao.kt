@@ -3,9 +3,10 @@ package br.com.pacificosul.data.ordens
 import java.math.BigDecimal
 import java.sql.Date
 
+data class OrdemProducaoData(val ordemProducao: Int, val OrdemProducaoPrincipal: Int? = null, val cancelamento: OrdemCancelamentoData? = null,
+                             val periodoProducao: Int? = null, val referencia: String? = null)
 data class OrdemCancelamentoPayload(val observacao: String)
 data class OrdemCancelamentoData(val hasErrors: Boolean = false, val codigoCancelamento: Int = 0, val messages: Set<String> = emptySet())
-data class OrdemProducaoData(val ordemProducao: Int, val OrdemProducaoPrincipal: Int, val cancelamento: OrdemCancelamentoData? = null)
 data class OrdemProducaoItem(val ordemProducao: Int, val tamanho: String,
                              val cor: String, val quantidade: Int, val ordenacaoTamanho: Int)
 data class OndeTemData(val periodoProducao: Int, val periodoAlterado: Int, val ordemProducao: Int,
@@ -23,3 +24,7 @@ data class OrdemFilhasData(val periodoProducao: Int, val ordemProducao: Int, val
                        val quantidadeProduzida: Int, val quantidadeSegunda: Int, val quantidadePerda: Int,
                        val quantidadeConserto: Int, val quantidadePendente: Int, val ordemServico: Int?,
                        val nomeTerceiro: String?)
+data class OrdemAvance(val sequencia: Int, val codigoEstagio: Int, val descricaoEstagio: String, val qtdeProgramada: Int,
+                       val qtdeProduzir: Int, val qtdeProduzido: Int, val qtdeSegunda: Int, val qtdePerda: Int,
+                       val qtdeConserto: Int, val qtdePendente: Int, val diasEstagio: Int, val dataEntrada: Date?,
+                       val dataBaixa: Date?, val horaEntrada: String?, val horaBaixa: String?, val usuario: String?)
