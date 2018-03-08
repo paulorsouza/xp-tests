@@ -28,7 +28,7 @@ class PsTbUsuarioAuthenticationProvider : AuthenticationProvider {
         val sqlParameters = arrayListOf<String>(cracha, password)
 
         if(ip == "192.168.0.96") {
-            val claims = TokenClaims("Darth Vader", "40379", "40379","192.168.0.96")
+            val claims = TokenClaims("Darth Vader", "3106", "41941","192.168.0.96")
             return UsernamePasswordAuthenticationToken(
                     claims, password, ArrayList<GrantedAuthority>())
         }

@@ -26,7 +26,7 @@ class GridProfileRepository(private val jdbcTemplate: NamedParameterJdbcTemplate
     }
 
     fun getColumnsDef(idPerfil: Int): List<GridColumnsDefData>? {
-        val sql = "select a.id, key, name, type, formatter_index, summary_index, filterable, a.id_grid_column" +
+        val sql = "select a.id, key, name, type, formatter_index, summary_index, filterable, a.id_grid_column, " +
                   "       locked, resizable, sortable, hidden, position, id_grid_perfil, b.id_grid " +
                   "from pacificosul.CONF_GRID_PERFIL_COLUMN a " +
                   "join pacificosul.CONF_GRID_COLUMN b on b.id = a.id_grid_column " +
@@ -87,19 +87,20 @@ class GridProfileRepository(private val jdbcTemplate: NamedParameterJdbcTemplate
     }
 
     fun getProfileName(gridName: String, profileName: String): String {
-        val sql = "select 1 from pacificosul.CONF_GRID_PERFIL a "
-                  "join pacificosul.conf_grid b "
-                  "  on b.id = a.id_grid "
-                  " and b.nome = :gridName "
+        val sql = "select 1 from pacificosul.CONF_GRID_PERFIL a " +
+                  "join pacificosul.conf_grid b " +
+                  "  on b.id = a.id_grid " +
+                  " and b.nome = :gridName " +
                   "where a.nome = :profileName "
         val mapa = HashMap<String, Any>()
         mapa["gridName"] = gridName
         mapa["profileName"] = profileName
-
+        println(sql)
         val alreadyExists = jdbcTemplate.query(sql, mapa) {
             rs, _ -> rs.getInt(1)
         }.firstOrNull() != null
 
+        /*TODO make this recursive to get a name already copied*/
         if(!alreadyExists) {
             return profileName
         }
@@ -128,8 +129,9 @@ class GridProfileRepository(private val jdbcTemplate: NamedParameterJdbcTemplate
         val mapa = HashMap<String, Any>()
         mapa["id"] = newId
         mapa["id_grid"] = gridId
-        mapa["id_usuario_gerenciador"] = userId
+        mapa["id_usuario"] = userId
         mapa["profileName"] = profileName
+        jdbcTemplate.update(insert, mapa)
         return newId
     }
 
