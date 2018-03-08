@@ -4,6 +4,7 @@ import br.com.pacificosul.data.GridColumnsDefData
 import br.com.pacificosul.data.GridProfileData
 import br.com.pacificosul.repository.GridProfileRepository
 import br.com.pacificosul.rules.getCodigoUsuario
+import br.com.pacificosul.rules.getClaims
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 
@@ -32,8 +33,7 @@ class GridProfileController: DefaultController() {
     }
 
     @PostMapping("column/update")
-    fun addObservacao(authentication: Authentication,
-                      @RequestBody payload: List<GridColumnsDefData>) {
+    fun updateColumns(@RequestBody payload: List<GridColumnsDefData>) {
         payload.forEach { x -> GridProfileRepository(oracleTemplate).updateColumnsDef(x) }
     }
 
@@ -43,4 +43,23 @@ class GridProfileController: DefaultController() {
         val codUsuario = getCodigoUsuario(authentication)
         return GridProfileRepository(oracleTemplate).getProfiles(gridName, codUsuario)
     }
+
+    @PostMapping("{gridName}/create-profile")
+    fun addProfile(authentication: Authentication,
+                   @PathVariable gridName: String,
+                   @RequestBody payload: Pair<String,  List<GridColumnsDefData>>): Pair<GridProfileData,  List<GridColumnsDefData>?>{
+        val claims = getClaims(authentication)
+        val gridId = GridProfileRepository(oracleTemplate).getGridId(gridName)
+        val codUsuario = Integer.parseInt(claims.cod_usuario)
+        val nomeUsuario = claims.apelido
+        var profileName = payload.first
+        if(profileName.isNullOrBlank()) profileName = "perfil-${nomeUsuario}"
+        profileName = GridProfileRepository(oracleTemplate).getProfileName(gridName, profileName)
+        val newProfileId = GridProfileRepository(oracleTemplate).createProfile(profileName, gridId, codUsuario)
+        GridProfileRepository(oracleTemplate).createColumns(newProfileId, payload.second)
+        val newColumns = GridProfileRepository(oracleTemplate).getColumnsDef(newProfileId)
+        val profileData = GridProfileData(newProfileId, profileName)
+        return Pair(profileData, newColumns)
+    }
+
 }
