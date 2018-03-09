@@ -57,9 +57,20 @@ class GridProfileController: DefaultController() {
         profileName = GridProfileRepository(oracleTemplate).getProfileName(gridName, profileName)
         val newProfileId = GridProfileRepository(oracleTemplate).createProfile(profileName, gridId, codUsuario)
         GridProfileRepository(oracleTemplate).createColumns(newProfileId, payload.second)
+        GridProfileRepository(oracleTemplate).updateCurrentProfile(gridId, newProfileId, codUsuario)
         val newColumns = GridProfileRepository(oracleTemplate).getColumnsDef(newProfileId)
         val profileData = GridProfileData(newProfileId, profileName)
         return Pair(profileData, newColumns)
+    }
+
+    @PostMapping("{gridName}/profile/{id}/update-user-profile")
+    fun updateUserProfile(authentication: Authentication,
+                          @PathVariable gridName: String,
+                          @PathVariable id: Int):  List<GridColumnsDefData>? {
+        val gridId = GridProfileRepository(oracleTemplate).getGridId(gridName)
+        val codUsuario = getCodigoUsuario(authentication)
+        GridProfileRepository(oracleTemplate).updateCurrentProfile(gridId, id, codUsuario)
+        return GridProfileRepository(oracleTemplate).getColumnsDef(id)
     }
 
 }

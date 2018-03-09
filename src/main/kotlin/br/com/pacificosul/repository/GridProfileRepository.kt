@@ -16,10 +16,6 @@ class GridProfileRepository(private val jdbcTemplate: NamedParameterJdbcTemplate
         mapa["gridName"] = gridName
         mapa["codUser"] = codUser
 
-        println(sql)
-        println(gridName)
-        println(codUser)
-
         return jdbcTemplate.query(sql, mapa) {
             rs, _ -> rs.getInt("id_perfil")
         }.firstOrNull()
@@ -151,5 +147,19 @@ class GridProfileRepository(private val jdbcTemplate: NamedParameterJdbcTemplate
             mapa["locked"] = if(column.locked) 1 else 0
             jdbcTemplate.update(insert, mapa)
         }
+    }
+
+    fun updateCurrentProfile(gridId: Int, perfilId: Int, codUsuario: Int) {
+        val update = "update pacificosul.CONF_GRID_PERFIL_USUARIO " +
+            "set id_grid_perfil = :id_grid_perfil " +
+            "where id_usuario = :id_usuario " +
+            "  and id_grid = :id_grid "
+
+        val mapa = HashMap<String, Any>()
+        mapa["id_grid_perfil"] = perfilId
+        mapa["id_usuario"] = codUsuario
+        mapa["id_grid"] = gridId
+
+        jdbcTemplate.update(update, mapa)
     }
 }
