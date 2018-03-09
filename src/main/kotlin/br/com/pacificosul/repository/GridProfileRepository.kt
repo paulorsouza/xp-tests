@@ -178,4 +178,23 @@ class GridProfileRepository(private val jdbcTemplate: NamedParameterJdbcTemplate
         jdbcTemplate.update(insert, mapa)
         return newId
     }
+
+    fun createGridColumn(idGrid: Int, data: GridColumnsDefData): Int {
+        val sql = "select pacificosul.id_conf_grid_column.nextval from dual"
+        val newId = jdbcTemplate.query(sql) { rs, _ -> rs.getInt(1) }.first()
+        val insert = "insert into pacificosul.conf_grid_column " +
+            "(id, id_grid, key, name, type, formatter_index) " +
+            "values " +
+            "(:id, :id_grid, :key, :name, :type, :formatter_index) "
+
+        val mapa = HashMap<String, Any>()
+        mapa["id"] = newId
+        mapa["id_grid"] = idGrid
+        mapa["key"] = data.key
+        mapa["name"] = data.name
+        mapa["type"] = data.type
+        mapa["formatter_index"] = if(data.formatter_index == null) 0 else 1
+        jdbcTemplate.update(insert, mapa)
+        return newId
+    }
 }
