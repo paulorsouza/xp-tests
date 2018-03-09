@@ -73,4 +73,10 @@ class GridProfileController: DefaultController() {
         return GridProfileRepository(oracleTemplate).getColumnsDef(id)
     }
 
+    /* This is a temporary gambi to generate columns on db*/
+    @PostMapping("{gridName}/temporary")
+    fun processJson(@PathVariable gridName: String,
+                    @RequestBody payload: List<GridColumnsDefData>) {
+        val newProfileId = GridProfileRepository(oracleTemplate).createProfile(profileName, gridId, codUsuario)
+    }
 }
