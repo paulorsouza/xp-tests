@@ -11,7 +11,7 @@ class GridProfileRepository(private val jdbcTemplate: NamedParameterJdbcTemplate
                   "            where a.id_usuario = :codUser), " +
                   "           (select a.id from pacificosul.conf_grid_perfil a " +
                   "            join pacificosul.conf_grid b on a.id_grid = b.id and b.nome = :gridName " +
-                  "            and a.nome = 'default')) as id_perfil from dual"
+                  "            and a.nome = 'Padrão')) as id_perfil from dual"
         val mapa = HashMap<String, Any>()
         mapa["gridName"] = gridName
         mapa["codUser"] = codUser
