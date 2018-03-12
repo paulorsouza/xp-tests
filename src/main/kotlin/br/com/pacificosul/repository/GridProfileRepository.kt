@@ -100,7 +100,7 @@ class GridProfileRepository(private val jdbcTemplate: NamedParameterJdbcTemplate
         if(!alreadyExists) {
             return profileName
         }
-        return "copy - ${profileName}"
+        return "${profileName} - copia"
     }
 
     fun getGridId(gridName: String): Int {
@@ -193,7 +193,7 @@ class GridProfileRepository(private val jdbcTemplate: NamedParameterJdbcTemplate
         mapa["key"] = data.key
         mapa["name"] = data.name
         mapa["type"] = data.type
-        mapa["formatter_index"] = if(data.formatter_index == null) 0 else 1
+        mapa["formatter_index"] = data.formatter_index!!
         jdbcTemplate.update(insert, mapa)
         return newId
     }

@@ -78,7 +78,7 @@ class GridProfileController: DefaultController() {
     fun processJson(@PathVariable gridName: String,
                     @RequestBody payload: List<GridColumnsDefData>) {
         val newGridId = GridProfileRepository(oracleTemplate).createGrid(gridName)
-        val newProfileId = GridProfileRepository(oracleTemplate).createProfile("default", newGridId, 3106)
+        val newProfileId = GridProfileRepository(oracleTemplate).createProfile("Padrão", newGridId, 3106)
         payload.forEach { data ->
             val newGridColumnId = GridProfileRepository(oracleTemplate).createGridColumn(newGridId, data)
             GridProfileRepository(oracleTemplate).createGridColumnPerfil(newProfileId, newGridColumnId, data)
