@@ -197,4 +197,20 @@ class GridProfileRepository(private val jdbcTemplate: NamedParameterJdbcTemplate
         jdbcTemplate.update(insert, mapa)
         return newId
     }
+
+    fun createGridColumnPerfil(idGridPerfil: Int, idGridColumn: Int, data: GridColumnsDefData){
+        val insert = "insert into pacificosul.conf_grid_perfil_column " +
+                "(id_grid_perfil, id_grid_column, position, summary_index, locked, hidden) " +
+                "values " +
+                "(:idGridPerfil, :idGridColumn, :position, :summary_index, :locked, :hidden) "
+
+        val mapa = HashMap<String, Any>()
+        mapa["idGridPerfil"] = idGridPerfil
+        mapa["idGridColumn"] = idGridColumn
+        mapa["position"] = data.position
+        mapa["summary_index"] = data.summary_index
+        mapa["locked"] = if(data.locked) 1 else 0
+        mapa["hidden"] = if(data.hidden) 1 else 0
+        jdbcTemplate.update(insert, mapa)
+    }
 }

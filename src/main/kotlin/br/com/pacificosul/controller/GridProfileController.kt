@@ -80,7 +80,8 @@ class GridProfileController: DefaultController() {
         val newGridId = GridProfileRepository(oracleTemplate).createGrid(gridName)
         val newProfileId = GridProfileRepository(oracleTemplate).createProfile("default", newGridId, 3106)
         payload.forEach { data ->
-            val gridId = GridProfileRepository(oracleTemplate).createGridColumn(newGridId, data)
+            val newGridColumnId = GridProfileRepository(oracleTemplate).createGridColumn(newGridId, data)
+            GridProfileRepository(oracleTemplate).createGridColumnPerfil(newProfileId, newGridColumnId, data)
         }
     }
 }
