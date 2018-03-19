@@ -5,6 +5,8 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.web.client.RestTemplate
+import br.com.pacificosul.data.PsChatData.*
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 
 class PsChatRule {
 
@@ -17,30 +19,34 @@ class PsChatRule {
         headers.accept = arrayListOf(MediaType.APPLICATION_JSON)
         headers.contentType = MediaType.APPLICATION_JSON
         // TODO create .properties to save this user
-        val entity = HttpEntity<AuthPayload>(AuthPayload("paulo", "1"), headers)
+        val entity = HttpEntity<AuthPayload>(AuthPayload("teste", "1"), headers)
         val restTemplate = RestTemplate()
         val response = restTemplate.exchange<UserAuth>(AUTH_URL,
                 HttpMethod.POST, entity, UserAuth::class.java)
         return response.getBody()
     }
 
-    fun createUser(userAuth: UserAuth, user: UserPayload): UserPayload {
+    fun hasChanges(ativo: Boolean, user: UserPayload, psUser: PsUser): Boolean {
+        val fields = user.customFields
+        val psUserAtivo = psUser.ativo == 1
+        return ativo != psUserAtivo || psUser.nome != user.name || fields?.email != psUser.email ||
+                psUser.senha != user.password || psUser.local != fields?.local || psUser.ramal != fields?.ramal
+    }
+
+    fun createUser(userAuth: UserAuth, user: UserPayload): String {
         val headers = HttpHeaders()
         headers.accept = arrayListOf(MediaType.APPLICATION_JSON)
         headers.contentType = MediaType.APPLICATION_JSON
         headers.set("X-Auth-Token", userAuth.data.authToken)
         headers.set("X-User-Id", userAuth.data.userId)
         val entity = HttpEntity<UserPayload>(user, headers)
+        val mapper = MappingJackson2HttpMessageConverter().objectMapper
+        println(mapper.writeValueAsString(entity.body))
+        println(entity.body)
         val restTemplate = RestTemplate()
-        restTemplate.exchange<String>(CREATE_USER_URL,
+        val response = restTemplate.exchange<String>(CREATE_USER_URL,
                 HttpMethod.POST, entity, String::class.java)
-        return user
+        println(response.body)
+        return response.body
     }
-
-    data class AuthPayload(val username: String, val password: String) {}
-    data class UserAuth(val status: String, val data: DataAuth) {}
-    data class DataAuth(val userId: String, val authToken: String) {}
-    data class UserPayload(val name: String, val email: String, val password: String, val userName: String,
-                           val customFields: CustomFieldsData)
-    data class CustomFieldsData(val ramal: Int, val cargo: String, val email: String)
 }
