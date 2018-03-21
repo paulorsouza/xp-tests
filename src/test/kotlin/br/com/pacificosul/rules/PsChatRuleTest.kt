@@ -8,15 +8,15 @@ import org.springframework.jdbc.core.JdbcTemplate
 import kotlin.test.assertEquals
 
 class PsChatRuleTest {
-    @Test
-    fun doAuth() {
-        val response = PsChatRule().auth()
-        assert(response.status == "success")
-    }
-
-    @Test
-    fun createUser() {
-        val jo = JdbcTemplate(HikariCustomConfig().getOracleTemplate())
-        PsChatRepository(jo).insert()
-    }
+//    @Test
+//    fun doAuth() {
+//        val response = PsChatRule().auth("teste", "teste")
+//        assert(response.status == "success")
+//    }
+//
+//    @Test
+//    fun createUser() {
+//        val jo = JdbcTemplate(HikariCustomConfig().getOracleTemplate())
+//        PsChatRepository(jo).cargaInicial()
+//    }
 }
