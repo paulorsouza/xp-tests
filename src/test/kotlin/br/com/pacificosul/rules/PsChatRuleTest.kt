@@ -18,8 +18,19 @@ class PsChatRuleTest {
         val jo = NamedParameterJdbcTemplate(JdbcTemplate(HikariCustomConfig().getOracleTemplate()))
         //  PsChatRepository(jo).cargaInicial()
         val auth = PsChatRule().auth("razor", "teste")
-        PsChatRepository(jo).userIntegration(auth, "41455")
-        PsChatRepository(jo).userIntegration(auth, "40432")
-        PsChatRepository(jo).userIntegration(auth, "40437")
+//        PsChatRepository(jo).userIntegration(auth, "41455")
+//        PsChatRepository(jo).userIntegration(auth, "40432")
+//        PsChatRepository(jo).userIntegration(auth, "40437")
     }
+
+    @Test
+    fun getUserInfo() {
+        val jo = NamedParameterJdbcTemplate(JdbcTemplate(HikariCustomConfig().getOracleTemplate()))
+        //  PsChatRepository(jo).cargaInicial()
+        val psChat = PsChatRule()
+        val auth = psChat.auth("razor", "123456")
+        assert(psChat.userExists(auth, "41941"))
+        assert(!psChat.userExists(auth, "3432413413"))
+    }
+
 }
