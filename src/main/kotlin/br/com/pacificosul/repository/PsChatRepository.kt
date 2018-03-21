@@ -1,12 +1,14 @@
 package br.com.pacificosul.repository
 
+import br.com.pacificosul.data.PsChatData.UserAuth
 import br.com.pacificosul.data.PsChatData.CustomFieldsData
 import br.com.pacificosul.data.PsChatData.UserPayload
 import br.com.pacificosul.rules.PsChatRule
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import java.sql.ResultSet
 
-class PsChatRepository(private val jdbcTemplate: JdbcTemplate) {
+class PsChatRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
     fun cargaInicial() {
         val auth = PsChatRule().auth("senha", "semsenha")
         val sql = "select a.cod_usuario_vetorh, des_usuario, a.des_email, " +
@@ -17,12 +19,32 @@ class PsChatRepository(private val jdbcTemplate: JdbcTemplate) {
                 "left join vetorh.r024car d on (b.codcar = d.codcar) " +
                 "left join systextil.efic_050 f on (b.numcad = f.cracha_funcionario) " +
                 "where b.numemp = 17 " +
-                "  and a.sit_usuario = 'A' and a.tem_rocketchat = 1 " +
-                "  and a.cod_usuario_vetorh in (38377, 40831) "
+                "  and a.sit_usuario = 'A' and a.tem_rocketchat = 1 "
         jdbcTemplate.query(sql) { rs, _ ->
             val userData = mountUserPayload(rs)
             PsChatRule().createUser(auth, userData)
         }
+    }
+
+    fun userIntegration(auth: UserAuth, cracha: String) {
+        val sql = "select a.cod_usuario_vetorh, des_usuario, a.des_email, " +
+                  "a.des_senha, descricao_setor, a.num_ramal " +
+                  "from pacificosul.ps_tb_usuario a " +
+                  "left join vetorh.r034fun b on (a.cod_usuario_vetorh = b.numcad and a.num_empresa = b.numemp) " +
+                  "left join systextil.basi_006 c on (b.numloc = c.setor_responsavel) " +
+                  "left join vetorh.r024car d on (b.codcar = d.codcar) " +
+                  "left join systextil.efic_050 f on (b.numcad = f.cracha_funcionario) " +
+                  "where b.numemp = 17 " +
+                  "  and a.sit_usuario = 'A' and a.tem_rocketchat = 1 " +
+                  "  and a.cod_usuario_vetorh = :cracha "
+        val mapa = HashMap<String, Any>()
+        mapa["cracha"] = cracha
+
+        val userData = jdbcTemplate.query(sql, mapa) {
+            rs, _ -> mountUserPayload(rs)
+        }.firstOrNull()
+
+        PsChatRule().createUser(auth, userData!!)
     }
 
     fun mountUserPayload(rs: ResultSet): UserPayload {
