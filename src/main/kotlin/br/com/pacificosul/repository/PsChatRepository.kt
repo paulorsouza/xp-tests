@@ -52,7 +52,7 @@ class PsChatRepository(private val jdbcTemplate: NamedParameterJdbcTemplate) {
         val des = transformName(rs.getString("DES_USUARIO"))
         val senha = rs.getString("DES_SENHA")
         val local = transformLocal(rs.getString("descricao_setor"))
-        val numRamal = rs.getInt("num_ramal")
+        val numRamal = rs.getString("num_ramal")
         val email = rs.getString("des_email").orEmpty()
 
         val customFields = CustomFieldsData(numRamal, email, local)
